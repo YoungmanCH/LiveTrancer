@@ -1,24 +1,11 @@
-.body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0; /* 背景をライトグレー */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
 .container {
   display: flex;
+  justify-content: center;
   flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 900px;
-  height: 100%;
-  background-color: #ffffff; /* メインコンテンツ背景は白 */
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
+  height: 100vh;
+  max-width: 1000px;
+  margin: 0 auto;
+  background-color: #f7f7f7;
 }
 
 .header {
@@ -49,6 +36,11 @@
   color: #0070f3; /* リンクの色 */
   font-size: 18px;
 }
+
+.navLink > .mic {
+  color: grey;
+}
+
 
 .main {
   flex: 1;
