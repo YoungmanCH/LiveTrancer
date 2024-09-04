@@ -5,11 +5,10 @@ import styles from './dashboard.module.css';
 
 export default function Dashboard() {
   const [inputText, setInputText] = useState('');
-  const [chatLog, setChatLog] = useState<{ sender: string; message: string }[]>([]);
+  const [chatLog, setChatLog] = useState([]); 
 
   const handleSend = () => {
     if (inputText.trim()) {
-      setChatLog((prevLog) => [...prevLog, { sender: 'User', message: inputText }]);
       setChatLog((prevLog) => [
         ...prevLog,
         { sender: 'User', message: inputText },
