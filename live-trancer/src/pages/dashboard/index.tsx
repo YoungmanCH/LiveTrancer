@@ -3,9 +3,14 @@
 import { useState } from 'react';
 import styles from './dashboard.module.css';
 
+interface ChatMessage {
+  sender: string;
+  message: string;
+}
+
 export default function Dashboard() {
   const [inputText, setInputText] = useState('');
-  const [chatLog, setChatLog] = useState([]); 
+  const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
 
   const handleSend = () => {
     if (inputText.trim()) {

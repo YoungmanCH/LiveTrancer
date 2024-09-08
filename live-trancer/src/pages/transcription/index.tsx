@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-export default function Transcription() {
+export default function TranscriptionPage() {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -11,9 +11,12 @@ export default function Transcription() {
 
   const startRecording = async () => {
     try {
+      // マイクデバイスから音声を取得
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       audioContextRef.current = new AudioContext();
       const source = audioContextRef.current.createMediaStreamSource(stream);
+
+      // ScriptProcessorNodeを使用して音声データを取得
       const processor = audioContextRef.current.createScriptProcessor(4096, 1, 1);
       processorRef.current = processor;
 
@@ -22,10 +25,12 @@ export default function Transcription() {
         const audioData = new Float32Array(input);
 
         if (socketRef.current?.readyState === WebSocket.OPEN) {
+          // WebSocketで音声データを送信
           socketRef.current.send(audioData.buffer);
         }
       };
 
+      // オーディオの接続を設定
       source.connect(processor);
       processor.connect(audioContextRef.current.destination);
 
@@ -58,23 +63,25 @@ export default function Transcription() {
   };
 
   useEffect(() => {
-    // WebSocketサーバーとの接続
+    // WebSocketサーバーに接続
     const socket = new WebSocket('ws://localhost:3000/api/transcription');
     socketRef.current = socket;
-  
+
+    // サーバーからメッセージを受信した場合の処理
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       setTranscript((prev) => `${prev}\n${data.transcript}`);
     };
-  
+
     socket.onclose = () => {
       console.log('WebSocket connection closed.');
     };
-  
+
     socket.onerror = (error) => {
       console.error('WebSocket error:', error);
     };
-  
+
+    // コンポーネントがアンマウントされるときにWebSocketを閉じる
     return () => {
       if (socketRef.current) {
         socketRef.current.close();
