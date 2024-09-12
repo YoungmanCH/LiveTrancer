@@ -1,3 +1,5 @@
 dist/
 
 .env
+
+microservices/services/summary/gguf-models/
