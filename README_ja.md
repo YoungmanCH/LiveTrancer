@@ -1,5 +1,7 @@
 <h1 align="center">LiveTrancer</h1>
 
+## 公式サイト:
+<a href="https://livetrancer.com">https://livetrancer.com</a>
 
 ## 概要:
 LiveTrancerは、リアルタイムで音声入力を要約し、要約された内容を音声とテキストの両方でリアルタイムに出力するWebアプリケーションです。このアプリは、会議やプレゼンテーション、カスタマーサポート、学習環境など、さまざまなシーンでの音声情報を迅速かつ簡潔に把握するために設計されています。
@@ -24,11 +26,22 @@ PCとスマートフォンの両方で使用可能。
 - Next.js
 - TypeScript
 
+#### バックエンド:
+- TypeScript
+- Python or C
+
 #### 音声処理: 
 - Deepgram API
+- Google TTS
 
-#### デプロイ: 
-- Firebase
+#### 音声加工
+- voicevox
+  
+#### テキスト加工
+- ChatGPT 4-omni or ELYZA
+
+#### デプロイ:
+- AWS
 
 ## 用途:
 
@@ -40,8 +53,6 @@ PCとスマートフォンの両方で使用可能。
 
 ### カスタマーサポート:
 顧客対応の際に、重要な情報を要約して効率的に対応。
-
-
 
 ## MEMO
 
