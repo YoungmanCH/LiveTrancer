@@ -1,21 +1,26 @@
-# ベースイメージを指定
-FROM node:18
+# ベースイメージとしてNode.js v18を使用
+FROM node:18-alpine
 
-# アプリケーションの作業ディレクトリを作成
+# 作業ディレクトリを設定
 WORKDIR /usr/src/app
 
-# 依存関係のインストール
+# package.jsonとpackage-lock.jsonをコンテナ内にコピー
 COPY package*.json ./
-RUN npm install
 
-# アプリケーションのソースコードをコピー
+# 依存関係をインストール
+RUN npm install --production
+
+# アプリケーションのソースコードをコンテナ内にコピー
 COPY . .
 
-# Next.jsアプリケーションをビルド
+# 必要であればNext.jsのビルドプロセスを実行（開発中のビルドキャッシュを無効化）
 RUN npm run build
 
-# アプリケーションのエクスポートポート
+# ポートを指定（Next.jsはデフォルトで3000番ポートを使用）
 EXPOSE 3000
+
+# 環境変数を設定（デフォルトで本番モードに）
+ENV NODE_ENV=production
 
 # アプリケーションの起動コマンド
 CMD ["npm", "start"]
