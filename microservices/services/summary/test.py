@@ -3,12 +3,12 @@ from langchain.prompts import PromptTemplate
 import time
 import textTrancer_OpenAI
 import textTrancer_llama3
-import test2
+import textTranser_elyza
 
 
 # text_transer = textTrancer_OpenAI.Text_Transer_OpenAI()
 # text_transer = textTrancer_llama3.Text_Transer_Llama3()
-text_transer = test2.Llama2()
+text_transer = textTranser_elyza.Llama2()
 
 
 start = time.time()

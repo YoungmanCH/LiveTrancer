@@ -1,6 +1,6 @@
-# python
 from llama_cpp import Llama
 from langchain.prompts import PromptTemplate
+import torch
 
 
 class Llama2():
@@ -16,6 +16,11 @@ class Llama2():
         print('Success to initialize LLM.')
         print('')
 
+        if torch.cuda.is_available():
+            print("GPU is available and being used.")
+        else:
+            print("GPU is not available. Running on CPU.")
+
 
     def get_translation(self, message):
         prompt_text = self.prompt.format(text=message)
@@ -25,21 +30,23 @@ class Llama2():
             stream=self.valid_stream
         )
         
+        u = ""
+
+        for chunk in response:
+            if not "content" in chunk["choices"][0]["delta"]:
+                continue
+            word = chunk["choices"][0]["delta"]["content"]
+            if word == None:
+                break
+            u += word
+        
+        # response_list = list(response)
+        # us = response_list["choices"][0]["message"]["content"]
         self.llama.close()
 
-        # u = ""
+        return u
+        # return us
 
-        # for chunk in response:
-        #     if not "content" in chunk["choices"][0]["delta"]:
-        #         continue
-        #     word = chunk["choices"][0]["delta"]["content"]
-        #     if word == None:
-        #         break
-        #     u += word
-
-
-        # return u
-        return response
 
     def set_agent_utterance(self, agent_utterance):
         pass
