@@ -11,7 +11,6 @@ model_name = "elyza/ELYZA-japanese-Llama-2-7b-instruct"
 # MKL-DNNの確認
 print(torch.backends.mkldnn.is_available())
 
-# GPUが利用可能かの確認
 print(torch.cuda.is_available())  # True なら GPU が利用可能
 print(torch.cuda.current_device())  # 使用中のデバイス ID
 print(torch.cuda.get_device_name(torch.cuda.current_device()))  # 使用中の GPU の名前
