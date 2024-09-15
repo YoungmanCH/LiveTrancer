@@ -1,104 +1,89 @@
-'use client';
+import React, { useEffect, useState } from "react";
+import io from "socket.io-client";
 
-import { useEffect, useRef, useState } from 'react';
+// サーバー側のエンドポイント
+const SOCKET_URL = '../../../../microservices/services/transcription/src/index.ts';
+// const SOCKET_URL = 'http://localhost:3001';
+let mediaRecorder: MediaRecorder;
 
-export default function TranscriptionPage() {
+const TranscriptionPage = () => {
+  const [socket, setSocket] = useState<any>(null);
+  const [transcription, setTranscription] = useState<string>("");
   const [isRecording, setIsRecording] = useState(false);
-  const [transcript, setTranscript] = useState('');
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const socketRef = useRef<WebSocket | null>(null);
-  const processorRef = useRef<ScriptProcessorNode | null>(null);
-
-  const startRecording = async () => {
-    try {
-      // マイクデバイスから音声を取得
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      audioContextRef.current = new AudioContext();
-      const source = audioContextRef.current.createMediaStreamSource(stream);
-
-      // ScriptProcessorNodeを使用して音声データを取得
-      const processor = audioContextRef.current.createScriptProcessor(4096, 1, 1);
-      processorRef.current = processor;
-
-      processor.onaudioprocess = (event) => {
-        const input = event.inputBuffer.getChannelData(0);
-        const audioData = new Float32Array(input);
-
-        if (socketRef.current?.readyState === WebSocket.OPEN) {
-          // WebSocketで音声データを送信
-          socketRef.current.send(audioData.buffer);
-        }
-      };
-
-      // オーディオの接続を設定
-      source.connect(processor);
-      processor.connect(audioContextRef.current.destination);
-
-      setIsRecording(true);
-      console.log('Recording started...');
-    } catch (error) {
-      console.error('Error accessing microphone:', error);
-    }
-  };
-
-  const stopRecording = () => {
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-    }
-
-    if (processorRef.current) {
-      processorRef.current.disconnect();
-    }
-
-    setIsRecording(false);
-    console.log('Recording stopped.');
-  };
-
-  const toggleRecording = () => {
-    if (isRecording) {
-      stopRecording();
-    } else {
-      startRecording();
-    }
-  };
 
   useEffect(() => {
-    // WebSocketサーバーに接続
-    const socket = new WebSocket('ws://localhost:3000/api/transcription');
-    socketRef.current = socket;
+    // Socket.IOに接続
+    const socketConnection = io(SOCKET_URL);
+    setSocket(socketConnection);
 
-    // サーバーからメッセージを受信した場合の処理
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setTranscript((prev) => `${prev}\n${data.transcript}`);
-    };
+    // Socket接続時の確認
+    socketConnection.on("connect", () => {
+      console.log("Socket connected:", socketConnection.id);
+    });
 
-    socket.onclose = () => {
-      console.log('WebSocket connection closed.');
-    };
+    // エラーが発生した場合
+    socketConnection.on("error", (error) => {
+      console.error("Socket error:", error);
+    });
 
-    socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
+    // 接続が切断された場合
+    socketConnection.on("disconnect", () => {
+      console.log("Socket disconnected");
+    });
 
-    // コンポーネントがアンマウントされるときにWebSocketを閉じる
+    // サーバーからのテキストを受け取る
+    socketConnection.on("transcription", (data: string) => {
+      setTranscription(data);
+    });
+
     return () => {
-      if (socketRef.current) {
-        socketRef.current.close();
-      }
+      socketConnection.disconnect();
     };
   }, []);
 
+  // 録音を開始する関数
+  const startRecording = async () => {
+    if (!socket) return;
+
+    console.log('started');
+
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+
+    mediaRecorder.ondataavailable = (event) => {
+      const audioData = event.data; // 音声データ
+      // console.log('Sending audio data:', audioData);
+      socket.emit('audio-stream', audioData); // サーバーに音声データを送信
+    };
+
+    mediaRecorder.start(2000); // 2秒ごとにデータを送信(0.1秒だとAPIの呼び出し制限に引っかかる)
+    setIsRecording(true);
+  };
+
+  // 録音を停止する関数
+  const stopRecording = () => {
+    if (mediaRecorder && isRecording) {
+      mediaRecorder.stop();
+      setIsRecording(false);
+      console.log('stopped');
+    }
+  };
+
   return (
     <div>
-      <h1>リアルタイム音声認識</h1>
-      <button onClick={toggleRecording}>
-        {isRecording ? '停止' : '録音開始'}
+      <h1>Live Transcription</h1>
+      <button onClick={startRecording} disabled={isRecording}>
+        Start Recording
+      </button>
+      <button onClick={stopRecording} disabled={!isRecording}>
+        Stop Recording
       </button>
       <div>
-        <h2>認識結果:</h2>
-        <pre>{transcript}</pre>
+        <h2>Transcription:</h2>
+        <p>{transcription}</p>
       </div>
     </div>
   );
-}
+};
+
+export default TranscriptionPage;

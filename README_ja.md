@@ -56,8 +56,25 @@ PCとスマートフォンの両方で使用可能。
 
 ## MEMO
 
-当初は、App Routerを使用していたが、Web Socketが使用できない等により、Page Routerを採用した。
-おかげで5時間くらい無駄になってしまったが、Page Routerの方が幅広いアーキテクチャが採用できるため、まぁ勉強になっただろう。しかし、Page Routerを使用することでWeb Socketが対応するわけだが、VercelがSocketに未対応であるため、Hosting機能を別で用意する必要がある。Firebase Hostingとかかな。
+UPDATED:
+
+STTの機能を実装しました。
+試してみるには、以下の手順にしたがってください。
+
+Step1. Client側のサーバーを立ち上げる。
+`cd LiveTrancer/live-trancer/`で移動した後、`npm run dev`を実行してください。
+
+Step2. Server側のサーバーを立ち上げる。
+`cd microservices/services/transcription`で移動した後、`npm run dev`を実行してください。
+
+Step3. マイクのボタンをタップし、transcriptionページに移動。
+
+Step4. Start recording!
+
+
+
+<!-- 当初は、App Routerを使用していたが、Web Socketが使用できない等により、Page Routerを採用した。
+おかげで5時間くらい無駄になってしまったが、Page Routerの方が幅広いアーキテクチャが採用できるため、まぁ勉強になっただろう。しかし、Page Routerを使用することでWeb Socketが対応するわけだが、VercelがSocketに未対応であるため、Hosting機能を別で用意する必要がある。Firebase Hostingとかかな。 -->
 
 ほいで、アーキテクチャについてだけど、フロントエンドは、Atomic Designを採用し、バックエンドは、マイクロサービスを使用するつもりである。
 
