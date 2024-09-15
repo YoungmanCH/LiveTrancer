@@ -77,6 +77,25 @@
   /* box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);   */
 }
 
+.recordContainer {
+  padding: 10px;
+  background-color: white;
+  padding-bottom: 10px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.recordBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #d1d1d1;
+  height: 100%;
+}
+
 .inputBox {
   position: relative;
   display: flex;
@@ -131,13 +150,29 @@
   font-size: 24px;
 }
 
+.onRecord {
+  padding: 20px;
+  margin: 0 auto;
+  border: none;
+  border-radius: 50%;
+  background-color: #d1d1d1;
+  color: black;
+}
+
+.onRecord > .recordingPhone {
+  font-size: 100px;
+}
 @media (max-width: 768px) {
+  .recordContainer{
+    height: 40%;
+  }
   .recordBox {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     background-color: #d1d1d1;
+    height: 100%;
   }
 
   .modeSwitch {

@@ -49,6 +49,12 @@ export default function Dashboard({
   const modeSwitch = () => {
     setIsMildTranslation(!isMildTranslation);
   };
+  let message;
+  if(isRecording) {
+    message = <p>タップして録音</p>;
+  }else{
+    message = null;
+  }
 
   return (
     <div className={styles.container}>
@@ -66,18 +72,27 @@ export default function Dashboard({
         )}
       </div>
 
-      <div className={styles.inputContainer}>
+      <div className={isRecording ? styles.recordContainer : styles.inputContainer}>
         <div className={isRecording ? styles.recordBox : styles.inputBox}>
-          <button onClick={modeSwitch} className={isRecording ? styles.none : styles.modeSwitch}>
+          <div>
+            {message}
+          </div>
+          <button
+            onClick={modeSwitch}
+            className={isRecording ? styles.none : styles.modeSwitch}
+          >
             <FontAwesomeIcon
               icon={faRefresh}
               className={styles.modeSwitchIcon}
             />
           </button>
-          <button onClick={handleRecording} className={styles.recordButton}>
+          <button
+            onClick={handleRecording}
+            className={isRecording ? styles.onRecord : styles.recordButton}
+          >
             <FontAwesomeIcon 
               icon={faMicrophone} 
-              className={styles.microphone}
+              className={isRecording ? styles.recordingPhone : styles.microphone}
             /> {/* アイコン切り替え */}
           </button>
         </div>
