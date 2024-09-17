@@ -1,7 +1,7 @@
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.schema import HumanMessage, SystemMessage
-import StreamCallbackHandler
+import StreamCallBackHandler
 import threading
 import os
 from dotenv import load_dotenv
@@ -12,12 +12,12 @@ class Text_Transer_GPT_Base():
         _openai_api_key = os.getenv("OPENAI_API_KEY")
         _model_name = "gpt-4o-mini" #turboよりちょっと早い? お気持ちレベル
         # _model_name = "gpt-3.5-turbo" #早め。3秒前後
-        _handler = StreamCallbackHandler.StreamCallBackHandler(self)
         self.llm = ChatOpenAI(
-            temperature = 0.7,
+            temperature = 0.5,
             model_name = _model_name,
+            max_tokens = 50,
             streaming = True,
-            callbacks = [_handler],
+            callbacks = [StreamCallBackHandler.StreamCallBackHandler(self)],
             openai_api_key = _openai_api_key
         )
 
@@ -27,16 +27,24 @@ class Text_Transer_GPT_Base():
         )
 
         self.history = ''
-
-        print('GPT is initialized.')
+        self.result = []
 
     def transe_text(self, text):
         self.history = self.llm.invoke(text)
 
-    def get_translation(self, message):
+    def start_translation(self, message):
         prompt_text = self.prompt.format(text = message, history = self.history)
         transer_thread = threading.Thread(target=self.transe_text(prompt_text))
         transer_thread.start()
+
+    def get_translation(self):
+        if self.result is None:
+            return ''
+        text = ''
+        for chunk in self.result:
+            text += chunk
+        self.result = []
+        return text
 
 
 class Term_Transer_GPT(Text_Transer_GPT_Base):

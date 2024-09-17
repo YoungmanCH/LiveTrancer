@@ -1,23 +1,50 @@
 # from langchain_openai import ChatOpenAI
 # from langchain.prompts import PromptTemplate
-import textTrancer_GPT as textTrancer_GPT
+# import textTrancer_GPT
+import tester
+import time
 
 
-text_transer = textTrancer_GPT.Term_Transer_GPT()
+# speaker = Speaker() #define Speaker class in other file.
+# text_transer = textTrancer_GPT.Term_Transer_GPT()
+
+_tester = tester.Tester()
 
 print('Test is started.')
+
+_tester.start_test()
+
+sample_text = "Buildxを使うことで、"
+_tester.add_message(sample_text)
+
+sample_text = "異なるアーキテクチャ（例：linux/arm64 や linux/ppc64le など）"
+_tester.add_message(sample_text)
+
+sample_text = "に向けたイメージもビルド可能で、"
+_tester.add_message(sample_text)
+
+sample_text = "クロスプラットフォームのビルドに特化しています。"
+_tester.add_message(sample_text)
+
+time.sleep(2)
+
+_tester.finish_test()
+
 
 # sample_text = "Buildxを使うことで、異なるアーキテクチャ（例：linux/arm64 や linux/ppc64le など）に向けたイメージもビルド可能で、クロスプラットフォームのビルドに特化しています。"
     # 0.50~1.25秒くらい
 
-sample_text = "Buildxを使うことで、"
-text_transer.get_translation(sample_text)
+# sample_text = "Buildxを使うことで、"
+# text_transer.start_translation(sample_text)
 
-sample_text = "異なるアーキテクチャ（例：linux/arm64 や linux/ppc64le など）に向けたイメージもビルド可能で、"
-text_transer.get_translation(sample_text)
+# sample_text = "異なるアーキテクチャ（例：linux/arm64 や linux/ppc64le など）に向けたイメージもビルド可能で、"
+# text_transer.start_translation(sample_text)
 
-sample_text = "クロスプラットフォームのビルドに特化しています。"
-text_transer.get_translation(sample_text)
+# sample_text = "クロスプラットフォームのビルドに特化しています。"
+# text_transer.start_translation(sample_text)
+
+# result = text_transer.get_translation()
+# print(result)
 
 # sample_text = "EC2とECSとECRとDockerを使った仮想環境ベースのアプリケーションの環境構築をしようとしているのだが、EC2サーバーのインスタンスを立ち上げるときに、高スペックのGPUを使用したい場合、サービスクォータにてどれくらいのクォータを呼び出すべきなのか、しっかりと議論したい。"
     # 0.50~0.75秒くらい
