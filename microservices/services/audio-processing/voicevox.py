@@ -3,6 +3,7 @@ from voicevox_core import VoicevoxCore, METAS
 import pyaudio
 from io import BytesIO
 import wave
+import threading
 
 
 class Speaker():
@@ -11,12 +12,21 @@ class Speaker():
         self.speaker_id = 1
         self.core.load_model(self.speaker_id)
         self.audio = pyaudio.PyAudio()
+
+        self.wave_stocks = []
         print('initialized')
+
+    def add_text(self, text):
+        wave_bytes = self.core.tts(text, self.speaker_id)
+        wave_obj = wave.open(BytesIO(wave_bytes), 'rb')
+        self.wave_stocks.append(wave_obj)
+
+    def start_speaking(self):
+        pass
 
     def speak(self, text):
         wave_bytes = self.core.tts(text, self.speaker_id)
-        wave_io = BytesIO(wave_bytes)
-        wave_obj = wave.open(wave_io, 'rb')
+        wave_obj = wave.open(BytesIO(wave_bytes), 'rb')
 
         stream = self.audio.open(
             format=self.audio.get_format_from_width(wave_obj.getsampwidth()),
@@ -29,6 +39,7 @@ class Speaker():
         while data:
             stream.write(data)
             data = wave_obj.readframes(1024)
+
 
         stream.stop_stream()
         stream.close()
