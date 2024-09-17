@@ -5,7 +5,7 @@ from io import BytesIO
 import wave
 
 
-class Voice_Vox():
+class Speaker():
     def __init__(self) -> None:
         self.core = VoicevoxCore(open_jtalk_dict_dir=Path("voicevox_core/open_jtalk_dic_utf_8-1.11"))
         self.speaker_id = 1

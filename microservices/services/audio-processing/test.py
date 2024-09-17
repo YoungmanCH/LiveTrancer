@@ -1,6 +1,6 @@
 import voicevox
 
 
-voice = voicevox.Voice_Vox()
+voice = voicevox.Speaker()
 voice.speak("人がゴミのようだ！！")
 
