@@ -1,99 +1,131 @@
-import threading
+from __future__ import division
+import re
+import sys
+import os
 import time
 from google.cloud import speech
-from pydub import AudioSegment
-from pydub.playback import play
-from vad import google_vad
-from stt import google_stt  # STTからMicrophoneStreamをインポート
-from llm import chatgpt      # OpenAI-based LLM (Language Model) module
+import pyaudio
+from six.moves import queue
 
-import textTrancer_OpenAI
+# sumaryディレクトリのtextTrancer_OpenAIモジュールをインポート
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../summary/test/rubbish/')))
+import textTrancer_OpenAI  # OpenAIベースの変換クラスをインポート
+
+# 録音のパラメータ
+RATE = 16000
+CHUNK = int(RATE / 10)  # 100ms
+
 # OpenAIのテキスト変換クラスを初期化
 text_transer = textTrancer_OpenAI.Text_Transer_OpenAI()
 
-from tts import voicevox
-from voicevox_core import VoicevoxCore
+class MicrophoneStream(object):
+    """録音ストリームを生成し、音声データを逐次返すジェネレーターを提供"""
+    def __init__(self, rate, chunk):
+        self._rate = rate
+        self._chunk = chunk
+        self._buff = queue.Queue()
+        self.closed = True
 
-class LiveTrancerMain:
-    def __init__(self):
-        self.valid_stream = True
-        self.latest_user_utterance = None
-        self.time_user_speeching_end = None
-
-        # Initialize Google VAD
-        vad = google_vad.GOOGLE_WEBRTC()
-        vad_thread = threading.Thread(target=vad.vad_loop, args=(self.callback_vad,))
-        vad_thread.start()
-
-        # Initialize Google STT
-        stt_thread = threading.Thread(target=self.stt_transcription)
-        stt_thread.start()
-
-        # Initialize LLM
-        self.llm = text_transer.Text_Transer_OpenAI()
-
-    def stt_transcription(self):
-        client = speech.SpeechClient()
-        config = speech.RecognitionConfig(
-            encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-            sample_rate_hertz=16000,
-            language_code="ja-JP",
+    def __enter__(self):
+        self._audio_interface = pyaudio.PyAudio()
+        self._audio_stream = self._audio_interface.open(
+            format=pyaudio.paInt16,
+            channels=1,
+            rate=self._rate,
+            input=True,
+            frames_per_buffer=self._chunk,
+            stream_callback=self._fill_buffer,
         )
-        streaming_config = speech.StreamingRecognitionConfig(
-            config=config, interim_results=True
-        )
+        self.closed = False
+        return self
 
-        # Use STT's MicrophoneStream instead of google_vad
-        with google_stt.MicrophoneStream(16000, int(16000 / 10)) as stream:
-            audio_generator = stream.generator()
-            requests = (speech.StreamingRecognizeRequest(audio_content=content)
-                        for content in audio_generator)
+    def __exit__(self, type, value, traceback):
+        self._audio_stream.stop_stream()
+        self._audio_stream.close()
+        self.closed = True
+        self._buff.put(None)
+        self._audio_interface.terminate()
 
-            responses = client.streaming_recognize(streaming_config, requests)
-            self.listen_loop(responses)
+    def _fill_buffer(self, in_data, frame_count, time_info, status_flags):
+        self._buff.put(in_data)
+        return None, pyaudio.paContinue
 
-    def listen_loop(self, responses):
-        for response in responses:
-            if not response.results:
-                continue
-            result = response.results[0]
-            if result.is_final:
-                self.latest_user_utterance = result.alternatives[0].transcript
-                print(f"Final transcription: {self.latest_user_utterance}")
-            else:
-                print(f"Interim transcription: {result.alternatives[0].transcript}")
+    def generator(self):
+        while not self.closed:
+            chunk = self._buff.get()
+            if chunk is None:
+                return
+            data = [chunk]
+            while True:
+                try:
+                    chunk = self._buff.get(block=False)
+                    if chunk is None:
+                        return
+                    data.append(chunk)
+                except queue.Empty:
+                    break
+            yield b"".join(data)
 
-    def callback_vad(self, is_speaking):
-        print(f"VAD detected: {'speaking' if is_speaking else 'silence'}")
-        if not is_speaking and self.latest_user_utterance:
-            self.time_user_speeching_end = time.time()
-            threading.Thread(target=self.process_transcription).start()
+def listen_print_loop(responses):
+    num_chars_printed = 0
+    for response in responses:
+        if not response.results:
+            continue
+        result = response.results[0]
+        transcript = result.alternatives[0].transcript
 
-    def process_transcription(self):
-        if self.latest_user_utterance:
-            transformed_text = self.llm.get_translation_stream(self.latest_user_utterance)
-            print(f"Transformed Text: {transformed_text}")
-            wav_data, wav_length = voicevox.get_audio_file_from_text(transformed_text)
-            self.audio_play(wav_data, wav_length)
+        overwrite_chars = " " * (num_chars_printed - len(transcript))
 
-    def audio_play(self, wav_data, wav_length):
-        start_time = time.time()
-        audio_file_path = "response.wav"
-        with open(audio_file_path, "wb") as f:
-            f.write(wav_data)
-        if self.time_user_speeching_end:
-            print(f"Response time: {time.time() - self.time_user_speeching_end} seconds")
-        sound = AudioSegment.from_wav(audio_file_path)
-        play(sound)
-        while time.time() - start_time < wav_length:
-            pass
+        # 中間結果もファイルに保存
+        print(f"Intermediate Transcript: {transcript}")
+        write_to_file("Intermediate", transcript + overwrite_chars)
 
-    def wait(self):
-        thread_list = threading.enumerate()
-        thread_list.remove(threading.main_thread())
-        for thread in thread_list:
-            thread.join()
+        if result.is_final:
+            # 確定した結果が出たときの処理
+            print(f"Final Transcript: {transcript}")
+            write_to_file("Final", transcript + overwrite_chars)
 
-if __name__ == '__main__':
-    live_trancer = LiveTrancerMain()
-    live_trancer.wait()
+            # OpenAIにテキストを送信して変換（加工後を表示）
+            print("Processing with OpenAI...")
+            translated_text = text_transer.get_translation_stream(transcript)
+            print(f"Processed: {translated_text}")
+            write_to_file("Processed", translated_text)
+
+            num_chars_printed = 0
+        else:
+            num_chars_printed = len(transcript)
+
+def write_to_file(transcript_type, text):
+    """
+    transcript_type: 'Intermediate', 'Final' または 'Processed' としてタイプを指定
+    text: 書き込むテキスト
+    """
+    with open("output.txt", "a", encoding="utf-8") as file:
+        file.write(f"{transcript_type}: {text}\n")
+
+
+def main():
+    language_code = "ja-JP"  # 日本語
+
+    client = speech.SpeechClient()
+    config = speech.RecognitionConfig(
+        encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
+        sample_rate_hertz=RATE,
+        language_code=language_code,
+    )
+
+    streaming_config = speech.StreamingRecognitionConfig(
+        config=config, interim_results=True
+    )
+
+    with MicrophoneStream(RATE, CHUNK) as stream:
+        audio_generator = stream.generator()
+        requests = (speech.StreamingRecognizeRequest(audio_content=content)
+                    for content in audio_generator)
+
+        responses = client.streaming_recognize(streaming_config, requests)
+        listen_print_loop(responses)
+
+if __name__ == "__main__":
+    main()
+
