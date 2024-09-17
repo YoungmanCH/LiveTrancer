@@ -3,3 +3,5 @@ dist/
 .env
 
 microservices/services/summary/gguf-models/
+
+microservices/services/summary/__pycache__/
