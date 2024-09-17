@@ -3,6 +3,8 @@ import Link from "next/link";
 import styles from "./GlobalLayout.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
+// import '@fontsource/jersey 15';
+// import '@fontsource/jersey 15/400.css';
 
 interface GlobalLayoutProps {
   children: ReactNode;
@@ -26,21 +28,8 @@ export default function GlobalLayout({
         <nav className={styles.nav}>
           <ul className={styles.navList}>
             <li className={styles.navItem}>
-              <Link href="/" className={styles.navLink}>
-                Logo
-              </Link>
-            </li>
-            <li className={styles.navItem}>
-              <Link href="/dashboard" className={styles.navLink}>
-                {isMildTranslation ? "Mild Translation" : "Term Translation"}
-              </Link>
-            </li>
-            <li className={styles.navItem}>
-              <Link href="/transcription" className={styles.navLink}>
-                <FontAwesomeIcon
-                  icon={faCog}
-                  className={styles.mic}
-                />
+              <Link href="/dashboard" className={isMildTranslation ? styles.navLink : styles.navLink_pro}>
+                {isMildTranslation ? "General" : "Professional"}
               </Link>
             </li>
           </ul>

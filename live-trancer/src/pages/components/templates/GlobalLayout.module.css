@@ -1,3 +1,4 @@
+
 .container {
   display: flex;
   justify-content: center;
@@ -5,11 +6,11 @@
   height: 100vh;
   /* max-width: 1000px; */
   margin: 30px auto;
-  background-color: #f7f7f7;
+  background-color: white;
 }
 
 .header {
-  background-color: #818181; /* ヘッダーも白 */
+  background-color: white; /* ヘッダーも白 */
   border-bottom: 1px solid #ddd;
   position: fixed;      /* ページに固定 */
   top: 0;            /* 画面下に配置 */
@@ -21,7 +22,7 @@
 
 .nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
 
 }
@@ -32,6 +33,7 @@
   padding: 0;
   display: flex;
   align-items: center;
+
   width: 100%;
 }
 
@@ -41,21 +43,18 @@
   padding: 1% 0;
 }
 
-.navItem:first-child {
-  text-align: left;
-  padding-left: 3%;
-}
-
-.navItem:last-child {
-  text-align: right;
-  padding-right: 3%;
-}
-
 .navLink {
   text-decoration: none;
-  color: #ffffff; /* リンクの色 */
+  color: #ffb4b3; /* リンクの色 */
   font-size: 24px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Jersey 15';
+}
+
+.navLink_pro {
+  text-decoration: none;
+  color: #83d8c3; /* リンクの色 */
+  font-size: 24px;
+  font-family: 'Jersey 15';
 }
 
 .navLink > .mic {

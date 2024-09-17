@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './dashboard.module.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone, faMicrophoneAltSlash, faMicrophoneSlash, faRefresh } from "@fortawesome/free-solid-svg-icons";
+import io from "socket.io-client";
+import { useRouter } from 'next/router';
 
 interface ChatMessage {
   sender: string;
@@ -25,8 +27,74 @@ export default function Dashboard({
 }: DashboardProps) {
   const [inputText, setInputText] = useState('');
   const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
-  // const [isRecording, setIsRecording] = useState(false);
-  // const [isMildTranslation, setIsMildTranslation] = useState(true); 
+ 
+  /*transcription/index.tsxからコピー*/
+  const [socket, setSocket] = useState<any>(null);
+  const [transcription, setTranscription] = useState<string>("");
+  const SOCKET_URL = '../../../../microservices/services/transcription/src/index.ts';
+  const router = useRouter();
+
+  let mediaRecorder: MediaRecorder;
+  
+  useEffect(() => {
+    // Socket.IOに接続
+    const socketConnection = io(SOCKET_URL);
+    setSocket(socketConnection);
+
+    // Socket接続時の確認
+    socketConnection.on("connect", () => {
+      console.log("Socket connected:", socketConnection.id);
+    });
+
+    // エラーが発生した場合
+    socketConnection.on("error", (error) => {
+      console.error("Socket error:", error);
+    });
+
+    // 接続が切断された場合
+    socketConnection.on("disconnect", () => {
+      console.log("Socket disconnected");
+    });
+
+    // サーバーからのテキストを受け取る
+    socketConnection.on("transcription", (data: string) => {
+      setTranscription(data);
+    });
+
+    return () => {
+      socketConnection.disconnect();
+    };
+  }, []);
+
+  // 録音を開始する関数
+  const startRecording = async () => {
+    if (!socket) return;
+
+    console.log('started');
+
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+
+    mediaRecorder.ondataavailable = (event) => {
+      const audioData = event.data; // 音声データ
+      // console.log('Sending audio data:', audioData);
+      socket.emit('audio-stream', audioData); // サーバーに音声データを送信
+    };
+
+    mediaRecorder.start(2000); // 2秒ごとにデータを送信(0.1秒だとAPIの呼び出し制限に引っかかる)
+    setIsRecording(!isRecording);
+  };
+
+  // 録音を停止する関数
+  const stopRecording = () => {
+    if (mediaRecorder && isRecording) {
+      mediaRecorder.stop();
+      console.log('stopped');
+    }
+    setIsRecording(!isRecording);
+  };
+  /*transcription/index.tsxからコピー ここまで*/
+
 
   const handleSend = () => {
     if (inputText.trim()) {
@@ -39,19 +107,13 @@ export default function Dashboard({
     }
   };
 
-  // 録音ボタンのハンドラー
-  const handleRecording = () => {
-    setIsRecording(!isRecording);
-    // 録音開始/停止のロジックをここに追加
-    console.log(isRecording ? 'Recording stopped' : 'Recording started');
-  };
-
   const modeSwitch = () => {
+    router.push('/professional');
     setIsMildTranslation(!isMildTranslation);
   };
   let message;
   if(isRecording) {
-    message = <p>タップして録音</p>;
+    message = <p>Recording...</p>;
   }else{
     message = null;
   }
@@ -78,6 +140,15 @@ export default function Dashboard({
             {message}
           </div>
           <button
+            onClick={isRecording ? stopRecording : startRecording}
+            className={isRecording ? styles.onRecord : styles.recordButton}
+          >
+            <FontAwesomeIcon 
+              icon={faMicrophone} 
+              className={isRecording ? styles.recordingPhone : styles.microphone}
+            /> {/* アイコン切り替え */}
+          </button>
+          <button
             onClick={modeSwitch}
             className={isRecording ? styles.none : styles.modeSwitch}
           >
@@ -86,23 +157,14 @@ export default function Dashboard({
               className={styles.modeSwitchIcon}
             />
           </button>
-          <button
-            onClick={handleRecording}
-            className={isRecording ? styles.onRecord : styles.recordButton}
-          >
-            <FontAwesomeIcon 
-              icon={faMicrophone} 
-              className={isRecording ? styles.recordingPhone : styles.microphone}
-            /> {/* アイコン切り替え */}
-          </button>
         </div>
-        {/* <textarea
+        <textarea
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Send a message..."
           className={styles.textArea}
         />
-        <button onClick={handleSend} className={styles.sendButton}>Send</button> */}
+        <button onClick={handleSend} className={styles.sendButton}>Send</button>
       </div>
     </div>
   );
