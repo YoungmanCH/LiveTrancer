@@ -37,6 +37,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding-top:20px;
 }
 
 .emptyMessage {
@@ -46,8 +47,8 @@
 
 .userMessage {
   align-self: flex-end;
-  background-color: #7f7f7f;
-  color: white;
+  background: linear-gradient(to bottom right, #fff6c4, #fed9af);
+  color: #767676;
   padding: 10px 15px;
   border-radius: 15px;
   max-width: 70%;
@@ -56,8 +57,18 @@
 
 .aiMessage {
   align-self: flex-start;
-  background-color: #d3d3d3;
-  color: #767676;
+  background: linear-gradient(to bottom right, #ff8db7, #ffcaae);
+  color: white;
+  padding: 10px 15px;
+  border-radius: 15px;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.aiMessage_pro {
+  align-self: flex-start;
+  background: linear-gradient(to bottom right, #8ed8d1, #d0eec7);
+  color: white;
   padding: 10px 15px;
   border-radius: 15px;
   max-width: 70%;
@@ -65,7 +76,7 @@
 }
 
 .inputContainer {
-  padding: 10px;
+  padding-top: 10px;
   background-color: white;
   padding-bottom: 10px;
   /* border-radius: 10px;
@@ -92,24 +103,26 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #d1d1d1;
+  background-color: #fcf0ed;
   height: 100%;
 }
 
 .inputBox {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 100px;
   margin: 0 auto;
+  position: relative;
+  /* gap: 30px; */
 }
 
 .modeSwitch {
   position: absolute;
   display: flex;
   align-items: center;
-  left: 30%;
+  /* margin-left: 30px; */
+  left: 100px;
   /* padding-left: 20%;
   padding-right: 40px; */
   background-color: white;
@@ -122,32 +135,39 @@
 .modeSwitch > .modeSwitchIcon {
   font-size: 27px;
   transform: rotate(-45deg);
-  color: #999999;
+  color: #ffb9b9;
   transition: color 0.3s ease;
+  /* box-shadow: 0px 1px 2px #1e1e1e; */
 }
 
 .modeSwitch > .modeSwitchIcon:hover {
-  color: #444444;
+  color:#ff8db7;
 }
 
 .recordButton {
   /* font-size: 18px; */
-  padding: 20px;
-  margin: 0 auto;
-  border: none;
+  padding: 10px;
+  /* position:absolute; */
+  /* margin: 0 auto; */
+  /* margin-right: 30px; */
+  border: 1px solid #ff8db7;
   border-radius: 50%;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  background-color: #767676;
-  color: white;
+  background-color: white;
+  color: #ff8db7;
+  box-shadow: 0px 1px 2px #1e1e1e;
+  width: 70px;
+  height: 70px;
 }
 
 .recordButton:hover {
-  background-color: #444444;
+  background-color: #ff8db7;
+  color: white;
 }
 
 .recordButton > .microphone {
-  font-size: 24px;
+  font-size: 36px;
 }
 
 .onRecord {
@@ -155,13 +175,15 @@
   margin: 0 auto;
   border: none;
   border-radius: 50%;
-  background-color: #d1d1d1;
-  color: black;
+  background-color: #fcf0ed;
+  cursor: pointer;
+  color: #ff8db7;
 }
 
 .onRecord > .recordingPhone {
   font-size: 100px;
 }
+
 @media (max-width: 768px) {
   .recordContainer{
     height: 40%;
@@ -171,7 +193,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    background-color: #d1d1d1;
+    background-color: #fcf0ed;
     height: 100%;
   }
 
@@ -179,6 +201,7 @@
     
   }
 }
+
 /* .textArea {
   flex-grow: 1;
   height: 50px;
@@ -188,9 +211,9 @@
   border: 1px solid #ddd;
   resize: none;
   outline: none;
-}
+} */
 
-.sendButton {
+/* .sendButton {
   margin-left: 10px;
   padding: 10px 20px;
   background-color: #0070f3;
@@ -199,4 +222,4 @@
   border-radius: 10px;
   cursor: pointer;
   font-size: 16px;
-} */
+}  */
