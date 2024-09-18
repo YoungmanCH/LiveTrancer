@@ -2,8 +2,10 @@ import queue
 import re
 import sys
 import time
+import os
 from google.cloud import speech
 import pyaudio
+import openai  # ChatGPT API用ライブラリ
 
 # Audio recording parameters
 STREAMING_LIMIT = 240000  # 4 minutes
@@ -112,12 +114,6 @@ class ResumableMicrophoneStream:
                     break
 
             yield b"".join(data)
-
-import openai  # ChatGPT API用ライブラリ
-import os
-
-# OpenAIのAPIキーを環境変数から取得（APIキーは適宜セットしてください）
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def process_text_with_chatgpt(transcript):
     """ChatGPT 4-omniを使用して、テキストを加工する関数"""

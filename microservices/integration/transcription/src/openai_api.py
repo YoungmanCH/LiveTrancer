@@ -1,14 +1,9 @@
-# openai_api.py
-import openai
 import os
+import openai
 from langchain.prompts import PromptTemplate
 
-# OpenAIのAPIキーを環境変数から取得
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-openai.api_key = OPENAI_API_KEY
-
 class OpenAIProcessor:
-    def __init__(self, model="gpt-4"):
+    def __init__(self, model="gpt-4o-mini"):
         self.model = model
 
     def process_text(self, text):

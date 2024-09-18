@@ -8,7 +8,7 @@ import threading
 
 class Speaker():
     def __init__(self) -> None:
-        self.core = VoicevoxCore(open_jtalk_dict_dir=Path("voicevox_core/open_jtalk_dic_utf_8-1.11"))
+        self.core = VoicevoxCore(open_jtalk_dict_dir=Path("open_jtalk/open_jtalk_dic_utf_8-1.11"))
         self.speaker_id = 1
         self.core.load_model(self.speaker_id)
         self.audio = pyaudio.PyAudio()
