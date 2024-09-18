@@ -12,19 +12,19 @@ interface ChatMessage {
   message: string;
 }
 
-interface DashboardProps {
+interface HomeProps {
   isRecording: boolean;
   setIsRecording: (value: boolean) => void;
   isMildTranslation: boolean;
   setIsMildTranslation: (value: boolean) => void;
 }
 
-export default function Dashboard({
+export default function Professional({
   isRecording, 
   setIsRecording,
   isMildTranslation,
   setIsMildTranslation
-}: DashboardProps) {
+}: HomeProps) {
   const [inputText, setInputText] = useState('');
   const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
  
@@ -108,7 +108,7 @@ export default function Dashboard({
   };
 
   const modeSwitch = () => {
-    router.push('/dashboard');
+    router.push('/general');
     setIsMildTranslation(!isMildTranslation);
   };
   let message;
@@ -122,7 +122,7 @@ export default function Dashboard({
     <div className={styles.container}>
       <div className={styles.chatBox}>
         {chatLog.length === 0 ? (
-          <p className={styles.emptyMessage}>No messages yet. Start the conversation!</p>
+          <p className={styles.emptyMessage}>インテリジェントな会話を始めましょう！</p>
         ) : (
           <div className={styles.chatLog}>
             {chatLog.map((log, index) => (
@@ -158,13 +158,13 @@ export default function Dashboard({
             />
           </button>
         </div>
-        <textarea
+        {/* <textarea
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Send a message..."
           className={styles.textArea}
         />
-        <button onClick={handleSend} className={styles.sendButton}>Send</button>
+        <button onClick={handleSend} className={styles.sendButton}>Send</button> */}
       </div>
     </div>
   );
