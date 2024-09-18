@@ -32,6 +32,7 @@ export default function dashboard({
     }
     return (
         <div className={styles.container}>
+            <p className={styles.title}>モードを選択</p>
             <div className={styles.buttonContainer}>
                 <button className={styles.generalButton} onClick={GeneralChoosen}>
                     General

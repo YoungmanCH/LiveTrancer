@@ -31,14 +31,23 @@ export default function home() {
     // }
     return (
         <div className={styles.container}>
-            <p className={styles.title}>LiveTrancer</p>
-            <p className={styles.description}>あなたの声を、より丁寧に、</p>
-            <p className={styles.description}>専門用語をより分かりやすく</p>
-            <button className={styles.startButton}>
-                <Link href="/dashboard" className={styles.Start}>
-                    Start
-                </Link>
-            </button>
+            <div className={styles.bgSlideshow}>
+                <div className={styles.bgSlide}></div>
+                <div className={styles.bgSlide}></div>
+                <div className={styles.bgSlide}></div>
+                <div className={styles.bgSlide}></div>
+                <div className={styles.bgSlide}></div>
+            </div>
+            <div className={styles.bgOverlay}>
+                <p className={styles.title}>LiveTrancer</p>
+                <p className={styles.description}>あなたの声を、より丁寧に、</p>
+                <p className={styles.description}>専門用語をより分かりやすく</p>
+                <button className={styles.startButton}>
+                    <Link href="/dashboard" className={styles.Start}>
+                        Start
+                    </Link>
+                </button>
+            </div>
         </div>
     );
 }
