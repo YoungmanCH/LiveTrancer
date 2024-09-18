@@ -26,13 +26,16 @@ export default function GlobalLayout({
   isMildTranslation,
   setIsMildTranslation
 }: GlobalLayoutProps) {
+  const resetState = () => {
+    setIsChoosen(false);
+  }
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <nav className={styles.nav}>
           <ul className={styles.navList}>
             <li className={styles.navItem}>
-              <Link href="/home" className={isChoosen ? (isMildTranslation ? styles.navLink : styles.navLink_pro):styles.none}>
+              <Link href="/home" onClick={resetState} className={isChoosen ? (isMildTranslation ? styles.navLink : styles.navLink_pro):styles.none}>
                 {isMildTranslation ? "General" : "Professional"}
               </Link>
             </li>
