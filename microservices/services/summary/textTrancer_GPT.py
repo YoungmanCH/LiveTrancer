@@ -58,5 +58,3 @@ class Mild_Transer_GPT(Text_Transer_GPT_Base):
         template = "字数や意味合いはあまり変えないまま、「{text}」を、聞き手の気分をあまり害さないように言い直してください。音声出力をしたいので、余計な応答や「」は不要です。なお、今回出力する文は{history}の続きの文です。違和感なく繋がるような文を生成してください。"
         super().__init__(template)
 
-        
-

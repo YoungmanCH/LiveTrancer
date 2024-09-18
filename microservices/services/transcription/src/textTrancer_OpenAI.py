@@ -7,7 +7,7 @@ import time
 # OpenAI APIキーを環境変数から取得
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-LANGCHAIN_API_KEY = os.environ["LANGCHAIN_API_KEY"]
+# LANGCHAIN_API_KEY = os.environ["LANGCHAIN_API_KEY"]
 
 class Text_Transer_OpenAI():
     def __init__(self) -> None:

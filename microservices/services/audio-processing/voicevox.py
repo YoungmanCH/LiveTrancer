@@ -14,6 +14,7 @@ class Speaker():
         self.audio = pyaudio.PyAudio()
 
         self.wave_stocks = []
+        self.can_speak = False
         print('initialized')
 
     def add_text(self, text):
@@ -22,27 +23,55 @@ class Speaker():
         self.wave_stocks.append(wave_obj)
 
     def start_speaking(self):
-        pass
+        self.can_speak = True
+        speak = threading.Thread(target=self.speak)
+        speak.start()
 
-    def speak(self, text):
-        wave_bytes = self.core.tts(text, self.speaker_id)
-        wave_obj = wave.open(BytesIO(wave_bytes), 'rb')
+    def finish_speaking(self):
+        self.can_speak = False
 
-        stream = self.audio.open(
-            format=self.audio.get_format_from_width(wave_obj.getsampwidth()),
-            channels=wave_obj.getnchannels(),
-            rate=wave_obj.getframerate(),
-            output=True
-        )
+    def speak(self):
+        while self.can_speak:
+            for stock in self.wave_stocks:
+                if not self.can_speak:
+                    break
+                stream = self.audio.open(
+                    format=self.audio.get_format_from_width(stock.getsampwidth()),
+                    channels=stock.getnchannels(),
+                    rate=stock.getframerate(),
+                    output=True
+                )
 
-        data = wave_obj.readframes(1024)
-        while data:
-            stream.write(data)
-            data = wave_obj.readframes(1024)
+                data = stock.readframes(1024)
+                while data:
+                    stream.write(data)
+                    data = stock.readframes(1024)
+
+                stream.stop_stream()
+                stream.close()
+
+                self.audio.terminate()
+                self.wave_stocks.remove(stock)
 
 
-        stream.stop_stream()
-        stream.close()
+    # def speak(self, text):
+    #     wave_bytes = self.core.tts(text, self.speaker_id)
+    #     wave_obj = wave.open(BytesIO(wave_bytes), 'rb')
 
-        self.audio.terminate()
+    #     stream = self.audio.open(
+    #         format=self.audio.get_format_from_width(wave_obj.getsampwidth()),
+    #         channels=wave_obj.getnchannels(),
+    #         rate=wave_obj.getframerate(),
+    #         output=True
+    #     )
+
+    #     data = wave_obj.readframes(1024)
+    #     while data:
+    #         stream.write(data)
+    #         data = wave_obj.readframes(1024)
+
+    #     stream.stop_stream()
+    #     stream.close()
+
+    #     self.audio.terminate()
 
