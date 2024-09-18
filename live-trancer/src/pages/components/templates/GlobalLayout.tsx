@@ -8,6 +8,8 @@ import { faCog } from "@fortawesome/free-solid-svg-icons";
 
 interface GlobalLayoutProps {
   children: ReactNode;
+  isChoosen: boolean;
+  setIsChoosen: (value: boolean) => void;
   isRecording: boolean;
   setIsRecording: (value: boolean) => void;
   isMildTranslation: boolean;
@@ -17,6 +19,8 @@ interface GlobalLayoutProps {
 
 export default function GlobalLayout({
   children,
+  isChoosen,
+  setIsChoosen,
   isRecording, 
   setIsRecording,
   isMildTranslation,
@@ -28,7 +32,7 @@ export default function GlobalLayout({
         <nav className={styles.nav}>
           <ul className={styles.navList}>
             <li className={styles.navItem}>
-              <Link href="/dashboard" className={isMildTranslation ? styles.navLink : styles.navLink_pro}>
+              <Link href="/home" className={isChoosen ? (isMildTranslation ? styles.navLink : styles.navLink_pro):styles.none}>
                 {isMildTranslation ? "General" : "Professional"}
               </Link>
             </li>

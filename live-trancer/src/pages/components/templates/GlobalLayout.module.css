@@ -5,7 +5,7 @@
   flex-direction: column;
   height: 100vh;
   /* max-width: 1000px; */
-  margin: 30px auto;
+  margin: 0 auto;
   background-color: white;
 }
 
@@ -19,6 +19,8 @@
   margin: 0 auto;       /* ページ中央に配置 */
   width: 100%;
 }
+
+.none{display: none;}
 
 .nav {
   display: flex;
@@ -40,7 +42,7 @@
 .navItem {
   flex: 1;
   text-align: center;
-  padding: 1% 0;
+  /* padding: 1% 0; */
 }
 
 .navLink {
@@ -83,6 +85,10 @@
   }
 
   .navLink {
+    font-size: 15px;
+  }
+
+  .navLink_pro {
     font-size: 15px;
   }
 

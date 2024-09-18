@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import styles from './professional.module.css';
+import styles from './general.module.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone, faMicrophoneAltSlash, faMicrophoneSlash, faRefresh } from "@fortawesome/free-solid-svg-icons";
 import io from "socket.io-client";
@@ -12,19 +12,19 @@ interface ChatMessage {
   message: string;
 }
 
-interface HomeProps {
+interface GeneralProps {
   isRecording: boolean;
   setIsRecording: (value: boolean) => void;
   isMildTranslation: boolean;
   setIsMildTranslation: (value: boolean) => void;
 }
 
-export default function Professional({
+export default function General({
   isRecording, 
   setIsRecording,
   isMildTranslation,
   setIsMildTranslation
-}: HomeProps) {
+}: GeneralProps) {
   const [inputText, setInputText] = useState('');
   const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
  
@@ -61,6 +61,8 @@ export default function Professional({
       setTranscription(data);
     });
 
+
+    
     return () => {
       socketConnection.disconnect();
     };
@@ -108,7 +110,7 @@ export default function Professional({
   };
 
   const modeSwitch = () => {
-    router.push('/home');
+    router.push('/professional');
     setIsMildTranslation(!isMildTranslation);
   };
   let message;
@@ -122,7 +124,7 @@ export default function Professional({
     <div className={styles.container}>
       <div className={styles.chatBox}>
         {chatLog.length === 0 ? (
-          <p className={styles.emptyMessage}>インテリジェントな会話を始めましょう！</p>
+          <p className={styles.emptyMessage}>楽しいトークを始めましょう！</p>
         ) : (
           <div className={styles.chatLog}>
             {chatLog.map((log, index) => (
