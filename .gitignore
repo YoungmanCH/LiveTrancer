@@ -1,5 +1,3 @@
-dist/
-
 .env
 
 microservices/services/summary/gguf-models/
@@ -8,3 +6,4 @@ microservices/services/summary/__pycache__/
 
 microservices/services/audio-processing/voicevox_core/model
 microservices/services/audio-processing/voicevox_core/open_jtalk_dic_utf_8-1.11
+
