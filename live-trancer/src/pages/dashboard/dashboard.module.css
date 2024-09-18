@@ -1,33 +1,89 @@
 @font-face {
-    font-family: 'Ibara Real Nova'; 
-    src: url('/fonts/IbarraRealNova-Regular.ttf') format('truetype'); /* フォントの形式に合わせて指定 */
-    font-weight: normal; /* 通常の太さ */
-    font-style: normal;   /* 通常のスタイル */
-}
-
-@font-face {
-  font-family: 'Noto Serif JP';
-  src: url('/fonts/NotoSerifJP-Regular.ttf') format('truetype');
+  font-family: 'Noto Serif JP'; 
+  src: url('/fonts/NotoSerifJP-Regular.ttf') format('truetype'); 
   font-weight: normal;
   font-style: normal;
 }
 
 .container {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
   height: 100vh;
-  max-width: 100%;
-  margin: 0 auto;
+  background-color: #f0f0f0;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  font-family: 'Noto Serif JP';
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.generalContainer, .professionalContainer {
+  width: 30%;
   background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.title{
-  font-family: 'Noto Serif JP', serif;
-  color:#a19690;
-  font-size: 48px;
+.generalButton {
+  width: 100%;
+  padding: 10px;
+  font-size: 1.2rem;
+  background-color: #f7acbb;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: auto;
 }
-.generalButton{}
 
-.professionalButton{}
+.professionalButton {
+  width: 100%;
+  padding: 10px;
+  font-size: 1.2rem;
+  background-color: #3dd7d0;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+.generalButton:hover{
+  background-color: #f7acbb;
+}
+.professionalButton:hover {
+  background-color: #3dd7d0;
+}
+
+.generalContainer p, .professionalContainer p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.generalContainer {
+  font-family: 'Noto Serif JP';
+  text-align: center;
+}
+
+.professionalContainer {
+  font-family: 'Noto Serif JP';
+  text-align: center;
+}

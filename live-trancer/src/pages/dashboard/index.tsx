@@ -35,12 +35,20 @@ export default function dashboard({
         <div className={styles.container}>
             <p className={styles.title}>モードを選択</p>
             <div className={styles.buttonContainer}>
-                <button className={styles.generalButton} onClick={GeneralChoosen}>
-                    General
-                </button>
-                <button className={styles.professionalButton} onClick={ProfessionalChoosen}>
-                    Professional
-                </button>
+                <div className={styles.generalContainer}>
+                    <h2>General</h2>
+                    <p>どんなに余裕の無い時でも自分の声を丁寧な日本語にトランスレートしてくれる機能</p>
+                    <button className={styles.generalButton} onClick={GeneralChoosen}>
+                        さっそく使ってみる
+                    </button>
+                </div>
+                <div className={styles.professionalContainer}>
+                    <h2>Professional</h2>
+                    <p>IT用語、専門用語など 知識ゼロの状態でも理解出来るように 分かりやすく要約して翻訳してくれる機能。使いながら専門用語の意味を学べる！</p>
+                    <button className={styles.professionalButton} onClick={ProfessionalChoosen}>
+                        さっそく使ってみる
+                    </button>
+                </div>
             </div>
         </div>
     );
