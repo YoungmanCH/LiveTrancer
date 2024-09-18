@@ -4,7 +4,14 @@
     font-weight: normal; /* 通常の太さ */
     font-style: normal;   /* 通常のスタイル */
 }
-  
+
+@font-face {
+  font-family: 'Noto Serif JP';
+  src: url('/fonts/NotoSerifJP-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 .container {
   display: flex;
   align-items: center;
@@ -16,6 +23,11 @@
   background-color: #fff;
 }
 
+.title{
+  font-family: 'Noto Serif JP', serif;
+  color:#a19690;
+  font-size: 48px;
+}
 .generalButton{}
 
 .professionalButton{}
