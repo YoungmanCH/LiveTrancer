@@ -158,13 +158,13 @@ export default function Professional({
             />
           </button>
         </div>
-        {/* <textarea
+        <textarea
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Send a message..."
           className={styles.textArea}
         />
-        <button onClick={handleSend} className={styles.sendButton}>Send</button> */}
+        <button onClick={handleSend} className={styles.sendButton}>Send</button>
       </div>
     </div>
   );
