@@ -1,10 +1,3 @@
-@font-face {
-  font-family: 'Noto Serif JP'; 
-  src: url('/fonts/NotoSerifJP-Regular.ttf') format('truetype'); 
-  font-weight: normal;
-  font-style: normal;
-}
-
 .container {
   display: flex;
   flex-direction: column;
@@ -12,36 +5,41 @@
   justify-content: center;
   height: 100vh;
   background-color: #f0f0f0;
+  padding: 20px; /* モバイル端末向けの余白 */
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 2rem; /* モバイル端末用に少し小さめに設定 */
   font-weight: bold;
   font-family: 'Noto Serif JP';
   margin-bottom: 2rem;
   text-transform: uppercase;
+  text-align: center;
 }
 
 .buttonContainer {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: space-evenly;
   width: 100%;
   max-width: 1200px;
 }
 
 .generalContainer, .professionalContainer {
-  width: 30%;
+  width: 100%; /* モバイル端末では全幅 */
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  margin-bottom: 20px; /* モバイルではスペースを追加 */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
 }
 
-.generalButton {
+.generalButton, .professionalButton {
   width: 100%;
   padding: 10px;
   font-size: 1.2rem;
@@ -53,19 +51,7 @@
   margin-top: auto;
 }
 
-.professionalButton {
-  width: 100%;
-  padding: 10px;
-  font-size: 1.2rem;
-  background-color: #3dd7d0;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: auto;
-}
-
-.generalButton:hover{
+.generalButton:hover {
   background-color: #f7acbb;
 }
 .professionalButton:hover {
@@ -73,7 +59,7 @@
 }
 
 .generalContainer p, .professionalContainer p {
-  font-size: 1.5rem;
+  font-size: 1.2rem; /* モバイルではフォントサイズを少し小さく */
   font-weight: bold;
   margin-bottom: 1rem;
 }
@@ -86,4 +72,35 @@
 .professionalContainer {
   font-family: 'Noto Serif JP';
   text-align: center;
+}
+
+/* タブレット用のレスポンシブ */
+@media (min-width: 768px) {
+  .buttonContainer {
+    flex-direction: row;
+  }
+
+  .generalContainer, .professionalContainer {
+    width: 45%; /* タブレットでは50%幅に設定 */
+    margin-bottom: 0;
+  }
+
+  .generalContainer p, .professionalContainer p {
+    font-size: 1.4rem; /* タブレット用のフォントサイズ */
+  }
+}
+
+/* デスクトップ用のレスポンシブ */
+@media (min-width: 1024px) {
+  .title {
+    font-size: 2.5rem; /* デスクトップ用の大きなタイトル */
+  }
+
+  .generalContainer, .professionalContainer {
+    width: 30%; /* デスクトップでは30%幅 */
+  }
+
+  .generalContainer p, .professionalContainer p {
+    font-size: 1.5rem; /* デスクトップ用のフォントサイズ */
+  }
 }

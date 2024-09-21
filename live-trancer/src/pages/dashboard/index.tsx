@@ -13,7 +13,7 @@ interface DashboardProps {
     setIsMildTranslation: (value: boolean) => void;
 }
 
-export default function dashboard({
+export default function Dashboard({
     isChoosen,
     setIsChoosen,
     isMildTranslation,
