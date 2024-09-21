@@ -1,21 +1,18 @@
 @font-face {
     font-family: 'Ibara Real Nova'; 
-    src: url('/fonts/IbarraRealNova-Regular.ttf') format('truetype'); /* フォントの形式に合わせて指定 */
-    font-weight: normal; /* 通常の太さ */
-    font-style: normal;   /* 通常のスタイル */
+    src: url('/fonts/IbarraRealNova-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
-  
+
 .container {
   display: flex;
-  /* align-items: center; */
-  /* justify-content: center; */
   flex-direction: column;
   height: 100vh;
   max-width: 100%;
   margin: 0;
   background-color: #fff;
-  /* overflow-y: auto; */
-  position:relative;
+  position: relative;
   z-index: 1;
 }
 
@@ -29,9 +26,8 @@
 }
 
 .title{
-    /* position:relative; */
     font-family:"Ibarra Real Nova", serif;
-    font-size: 128px;
+    font-size: 8vw; /* フォントサイズを画面幅に応じて調整 */
     color:white;
     margin: 40px 0;
     margin-top: 50px;
@@ -40,19 +36,17 @@
 }
 
 .description{
-    /* position:relative; */
-    font-size: 28px;
-    margin-left:10%;
+    font-size: 5vw; /* フォントサイズを画面幅に応じて調整 */
+    margin-left: 10%;
     margin-top: 0;
     margin-bottom: 0;
     color:white;
 }
 
 .startButton{
-    /* position:relative; */
     background: linear-gradient(to right, #f7acbb, #b4fdde);
-    width: 202px;
-    height: 80px;
+    width: 50vw; /* モバイル対応のため、相対値を使用 */
+    height: 12vw; /* 相対値でサイズを指定 */
     border-radius: 3%;
     border: none;
     margin-top: 120px;
@@ -62,11 +56,9 @@
 
 .startButton > .Start{
     font-family: 'Ibara Real Nova', serif;
-    font-size: 30px;
+    font-size: 5vw; /* フォントサイズを相対的に */
     color: white;
     text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
     cursor: pointer;
 }
 
@@ -128,4 +120,58 @@
 .bgSlide:nth-child(5) {
     background-image: url('/images/Calling Children.webp');
     animation-delay: 20s;
+}
+
+/* モバイル用（小さい画面対応） */
+@media (max-width: 600px) {
+    .title {
+        font-size: 12vw; /* 小さい画面に合わせてフォントサイズを調整 */
+        margin-left: 5%; /* 余白を少し調整 */
+    }
+    .description {
+        font-size: 6vw; /* 説明文も小さく調整 */
+        margin-left: 5%;
+    }
+    .startButton {
+        width: 60vw; /* ボタン幅を調整 */
+        height: 15vw;
+        margin-left: 5%;
+    }
+    .startButton > .Start {
+        font-size: 6vw;
+    }
+}
+
+/* タブレット用（中くらいの画面対応） */
+@media (min-width: 600px) and (max-width: 1024px) {
+    .title {
+        font-size: 10vw;
+    }
+    .description {
+        font-size: 5vw;
+    }
+    .startButton {
+        width: 40vw;
+        height: 10vw;
+    }
+    .startButton > .Start {
+        font-size: 4vw;
+    }
+}
+
+/* デスクトップ用（大きい画面対応） */
+@media (min-width: 1024px) {
+    .title {
+        font-size: 5rem; /* デスクトップでのフォントサイズ */
+    }
+    .description {
+        font-size: 2rem;
+    }
+    .startButton {
+        width: 200px;
+        height: 80px;
+    }
+    .startButton > .Start {
+        font-size: 2rem;
+    }
 }
