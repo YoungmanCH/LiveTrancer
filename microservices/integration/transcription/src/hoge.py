@@ -6,7 +6,6 @@ import os
 from google.cloud import speech
 import pyaudio
 import openai  # ChatGPT API用ライブラリ
-import numpy as np
 
 # Audio recording parameters
 STREAMING_LIMIT = 240000  # 4 minutes
@@ -124,7 +123,7 @@ def process_text_with_chatgpt(transcript):
     ).format(transcript)
 
     # ChatCompletion.create を使用
-    response = openai.ChatCompletion.create(
+    response = openai.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
@@ -143,22 +142,11 @@ def save_to_file(text):
         file.write(text + "\n")
         
 def listen_print_loop(responses, stream):
-    """STTのレスポンスを受け取って処理するループ関数"""
     num_chars_printed = 0
     last_speech_time = time.time()
     previous_transcript = ""  # Store the previous final transcript
-    print('listen_print_loopが呼び出されています')
 
-        # responsesをリストに変換して確認
-    try:
-        response_list = list(responses)  # これでレスポンスを全て取り出して確認する
-        print(f"Response list length: {len(response_list)}")  # レスポンスの数を表示
-    except Exception as e:
-        print(f"Error retrieving responses: {e}")
-        return
-    
     for response in responses:
-        print('for文が実行されています')
         if get_current_time() - stream.start_time > STREAMING_LIMIT:
             stream.start_time = get_current_time()
             break
@@ -202,12 +190,7 @@ def listen_print_loop(responses, stream):
             sys.stdout.write(f"Interim: {transcript}\r")  # Print interim transcript
             stream.last_transcript_was_final = False
 
-def main(audio_data=None):
-    """
-    WebSocket経由で受け取った音声データを処理するメイン関数。
-    audio_data: WebSocket経由で受け取った音声データ。
-    """
-    # Google Cloud Speech Clientの初期化
+def main():
     client = speech.SpeechClient()
     config = speech.RecognitionConfig(
         encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
@@ -215,39 +198,29 @@ def main(audio_data=None):
         language_code="ja-JP",
         max_alternatives=1,
     )
+
     streaming_config = speech.StreamingRecognitionConfig(
         config=config, interim_results=True
     )
 
-    # 音声データの処理
-    if audio_data is not None:
-        # WebSocketから受け取った場合
-        if isinstance(audio_data, np.ndarray):
-            audio_data_bytes = audio_data.tobytes()
-            requests = [speech.StreamingRecognizeRequest(audio_content=audio_data_bytes)]
-            print('受け取った音声データの型は正しいです')
-        else:
-            print("Invalid audio data format.")
-            return
-    else:
-        # マイク入力からの音声処理
-        mic_manager = ResumableMicrophoneStream(SAMPLE_RATE, CHUNK_SIZE)
-        with mic_manager as stream:
+    mic_manager = ResumableMicrophoneStream(SAMPLE_RATE, CHUNK_SIZE)
+    sys.stdout.write('\nListening, say "終了" to stop.\n\n')
+    sys.stdout.write("End (ms)       Transcript Results/Status\n")
+    sys.stdout.write("=====================================================\n")
+
+    with mic_manager as stream:
+        while not stream.closed:
             audio_generator = stream.generator()
             requests = (
                 speech.StreamingRecognizeRequest(audio_content=content)
                 for content in audio_generator
             )
 
-    try:
-        # Google STTへのストリーミングリクエスト
-        responses = client.streaming_recognize(streaming_config, requests)
-        print(f'responses: {responses}')
-        listen_print_loop(responses, stream if audio_data is None else None)
-    except Exception as e:
-        print(f"An error occurred during STT processing: {e}")
+            responses = client.streaming_recognize(streaming_config, requests)
+
+            # Now, put the transcription responses to use.
+            listen_print_loop(responses, stream)
+
 
 if __name__ == "__main__":
-    # テスト用のダミーの numpy ndarray を生成して main() を呼び出す
-    dummy_audio_data = np.random.randint(-32768, 32767, SAMPLE_RATE, dtype=np.int16)  # 1秒分のダミーデータ
     main()
