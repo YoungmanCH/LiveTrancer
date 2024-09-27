@@ -31,8 +31,7 @@ export default function Professional({
   const [transcription, setTranscription] = useState<string>("");
   const SOCKET_URL = "http://127.0.0.1:5000"; // FlaskサーバーのURL
   const router = useRouter();
-  let audioContext: AudioContext | null = null;
-  let processor: ScriptProcessorNode | null = null;
+  let mediaRecorder: MediaRecorder;
 
   useEffect(() => {
     const socketConnection = io(SOCKET_URL);
@@ -58,70 +57,34 @@ export default function Professional({
     // WebSocket接続のクリーンアップ
     return () => {
       socketConnection.disconnect();
-      if (audioContext) {
-        audioContext.close();
-      }
     };
   }, []);
 
+  // 録音を開始する関数
   const startRecording = async () => {
     if (!socket) return;
     console.log("Recording started");
 
-    // AudioContextとScriptProcessorNodeのセットアップ
-    audioContext = new AudioContext();
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const input = audioContext.createMediaStreamSource(stream);
+    mediaRecorder = new MediaRecorder(stream);
 
-    // ScriptProcessorNodeを作成して、オーディオ処理を行う
-    processor = audioContext.createScriptProcessor(1024, 1, 1);
-    input.connect(processor);
-    processor.connect(audioContext.destination);
-
-    processor.onaudioprocess = (event) => {
-      const inputBuffer = event.inputBuffer.getChannelData(0);
-      const downsampledBuffer = downsampleBuffer(inputBuffer, audioContext!.sampleRate, 16000);
-      console.log('downsampledBuffer: ', downsampledBuffer);
-      socket.emit("stt", downsampledBuffer); // 変換した音声データを送信
+    mediaRecorder.ondataavailable = (event) => {
+      const audioData = event.data;
+      socket.emit("stt", audioData);
       console.log("サーバーに音声データを送信中");
     };
 
+    mediaRecorder.start(1000); // Send data every 1 second
     setIsRecording(true);
+    console.log("音声データを送信済み");
   };
 
   const stopRecording = () => {
-    if (processor && audioContext) {
-      processor.disconnect();
-      audioContext.close();
+    if (mediaRecorder && isRecording) {
+      mediaRecorder.stop();
       console.log("Recording stopped");
     }
     setIsRecording(false);
-  };
-
-  const downsampleBuffer = (buffer: Float32Array, sampleRate: number, outSampleRate: number) => {
-    if (outSampleRate > sampleRate) {
-      console.error("ダウンサンプリングレートは、元のサンプルレートより小さくする必要があります。");
-      return buffer;
-    }
-    const sampleRateRatio = sampleRate / outSampleRate;
-    const newLength = Math.round(buffer.length / sampleRateRatio);
-    const result = new Int16Array(newLength);
-    let offsetResult = 0;
-    let offsetBuffer = 0;
-    while (offsetResult < result.length) {
-      const nextOffsetBuffer = Math.round((offsetResult + 1) * sampleRateRatio);
-      let accum = 0;
-      let count = 0;
-      for (let i = offsetBuffer; i < nextOffsetBuffer && i < buffer.length; i++) {
-        accum += buffer[i];
-        count++;
-      }
-      result[offsetResult] = Math.min(1, accum / count) * 0x7fff;
-      offsetResult++;
-      offsetBuffer = nextOffsetBuffer;
-    }
-    console.log('ダウンサンプリング中です');
-    return result.buffer;
   };
 
   const modeSwitch = () => {
