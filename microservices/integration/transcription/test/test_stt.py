@@ -2,7 +2,6 @@ import wave
 import numpy as np
 import time
 from google.cloud import speech
-import openai  # ChatGPT API用ライブラリ
 
 # WAVファイルの設定
 SAMPLE_RATE = 16000  # サンプルレート
@@ -12,9 +11,9 @@ SAMPLE_WIDTH = 2  # 16ビット
 # 音声データを蓄積するリストと時間管理
 audio_frames = []
 start_time = None  # 音声収集の開始時間
+silence_start_time = None  # 無音区間の開始時間を記録
 MIN_SILENCE_DURATION = 0.8  # 文節を区切るための無音区間のしきい値（秒）
 
-# 直近の音声域〜無音声域までの音声を同ファイルに上書き保存。
 def save_to_wav(audio_data, filename="test_stt_to_wav.wav"):
     """取得した音声データをWAVファイルに保存"""
     with wave.open(filename, 'wb') as wf:
@@ -47,45 +46,11 @@ def transcribe_audio(audio_data):
         # レスポンスからのテキスト解析と出力
         for response in responses:
             for result in response.results:
-                transcript = result.alternatives[0].transcript
-                print(f'Transcript: {transcript}')
-
-                # 元のテキストをファイルに保存
-                save_original_transcription_to_file(transcript)
-                
-                # テキストをChatGPTで加工してファイルに保存
-                processed_text = process_text_with_chatgpt(transcript)
-                save_transcription_to_file(processed_text)
-                
+                print(f'Transcript: {result.alternatives[0].transcript}')
+                # ここでテキストを他の処理に渡すことも可能
+                save_transcription_to_file(result.alternatives[0].transcript)
     except Exception as e:
         print(f"An error occurred during STT processing: {e}")
-
-def process_text_with_chatgpt(transcript):
-    """ChatGPT 4-omniを使用して、テキストを加工する関数"""
-    prompt = (
-        "「{}」を、専門用語を噛み砕きつつ高校生にも分かりやすいよう言い直してください。"
-        "字数はあまり変えないで。想定としては音声出力をします。"
-    ).format(transcript)
-
-    # ChatCompletion.create を使用
-    response = openai.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=150,
-        temperature=0.7
-    )
-    
-    # ChatGPTからの生成テキストを取得
-    return response.choices[0].message.content.strip()
-
-def save_original_transcription_to_file(transcript):
-    """STTで取得した元のテキストを別のファイルに保存"""
-    with open("original_transcription.txt", "a", encoding="utf-8") as f:
-        f.write(transcript + "\n")
-    print("Original transcription saved to original_transcription.txt")
 
 def save_transcription_to_file(transcript):
     """STTで取得したテキストをファイルに保存"""
@@ -96,13 +61,13 @@ def save_transcription_to_file(transcript):
 def process_audio(data):
     """
     音声データを蓄積し、無音区間ごとに文節を判断してGoogle STTで解析する。
-    文節の処理が終了した後にChatGPTでテキスト加工を施し、ファイルに保存する。
+    文節の処理が終了した後にWAVファイルに音声データを保存する。
     """
-    global start_time, audio_frames
+    global start_time, audio_frames, silence_start_time
 
     # 無音区間を検出するしきい値
     # 音質によって適切に調整しよう！
-    silence_threshold = 1000  # 例として音声の振幅をしきい値として使う
+    silence_threshold = 1000  # 音声の振幅を無音区間のしきい値として使用
 
     def is_silence(audio_chunk):
         """無音区間を検出する簡単な関数"""
@@ -115,12 +80,14 @@ def process_audio(data):
     if start_time is None:
         start_time = time.time()
 
-    # 無音区間が検出された場合に文節を区切る
     if is_silence(data):
-        print("無音区間が検出されました。文節を処理します。")
-
-        # 音声データをリセットせず、無音区間終了後に処理
-        if time.time() - start_time >= MIN_SILENCE_DURATION:
+        # 無音区間の開始時刻を設定
+        if silence_start_time is None:
+            silence_start_time = time.time()
+        # 無音が一定時間続いた場合、文節として処理
+        elif time.time() - silence_start_time >= MIN_SILENCE_DURATION:
+            print("無音区間が続いています。文節を処理します。")
+            
             # 蓄積した音声データを結合してWAVファイルに保存
             combined_data = np.concatenate(audio_frames).tobytes()
             save_to_wav(combined_data)
@@ -132,8 +99,8 @@ def process_audio(data):
             # 音声データと開始時間をリセット
             audio_frames = []
             start_time = None
-
+            silence_start_time = None
     else:
-        # 無音区間でなければ音声を継続的に蓄積する
+        # 無音でない場合、無音区間のカウントをリセット
+        silence_start_time = None
         print("音声データを継続して蓄積中...")
-
