@@ -1,0 +1,131 @@
+@font-face {
+  font-family: 'Ibara Real Nova'; 
+  src: url('/fonts/IbarraRealNova-Regular.ttf') format('truetype'); /* フォントの形式に合わせて指定 */
+  font-weight: normal; /* 通常の太さ */
+  font-style: normal;   /* 通常のスタイル */
+}
+
+.container {
+display: flex;
+/* align-items: center; */
+/* justify-content: center; */
+flex-direction: column;
+height: 100vh;
+max-width: 100%;
+margin: 0;
+background-color: #fff;
+/* overflow-y: auto; */
+position:relative;
+z-index: 1;
+}
+
+.bgOverlay{
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.title{
+  /* position:relative; */
+  font-family:"Ibarra Real Nova", serif;
+  font-size: 128px;
+  color:white;
+  margin: 40px 0;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  margin-left: 10%;
+}
+
+.description{
+  /* position:relative; */
+  font-size: 28px;
+  margin-left:10%;
+  margin-top: 0;
+  margin-bottom: 0;
+  color:white;
+}
+
+.startButton{
+  /* position:relative; */
+  background: linear-gradient(to right, #f7acbb, #b4fdde);
+  width: 202px;
+  height: 80px;
+  border-radius: 3%;
+  border: none;
+  margin-top: 120px;
+  cursor: pointer;
+  margin-left: 10%;
+}
+
+.startButton > .Start{
+  font-family: 'Ibara Real Nova', serif;
+  font-size: 30px;
+  color: white;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+
+@keyframes slide {
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.bgSlideshow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.bgSlide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  animation: slide 20s infinite;
+}
+
+.bgSlide:nth-child(1) {
+  background-image: url('/images/Call center lady.webp');
+  animation-delay: 0s;
+}
+
+.bgSlide:nth-child(2) {
+  background-image: url('/images/Chatting people.webp');
+  animation-delay: 5s;
+}
+
+.bgSlide:nth-child(3) {
+  background-image: url('/images/Group Discussion.webp');
+  animation-delay: 10s;
+}
+
+.bgSlide:nth-child(4) {
+  background-image: url('/images/Smilling office worker.webp');
+  animation-delay: 15s;
+}
+
+.bgSlide:nth-child(5) {
+  background-image: url('/images/Calling Children.webp');
+  animation-delay: 20s;
+}
