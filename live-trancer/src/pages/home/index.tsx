@@ -1,53 +1,27 @@
-'use client';
+import styles from "./home.module.css";
 
-import { useState, useEffect } from 'react';
-import styles from './home.module.css';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import io from "socket.io-client";
-import Link from "next/link";
-import { useRouter } from 'next/router';
+export default function Home() {
+  return (
+    <div className={styles.container}>
 
-interface HomeProps {
-    isChoosen: boolean;
-    setIsChoosen: (value: boolean) => void;
-    isMildTranslation: boolean;
-    setIsMildTranslation: (value: boolean) => void;
-}
+      <header className={styles.header}>
+        <div className={styles.logo}>LIVE TRANCER</div>
+        <nav className={styles.navbar}>
+          <a href="#">Home</a>
+          <a href="#">About Us</a>
+          <a href="#">Products</a>
+          <a href="#">News</a>
+        </nav>
+      </header>
 
-export default function home() {
-    
-    // const router = useRouter();
-    // const GeneralChoosen = () => {
-    //     setIsChoosen(true);
-    //     setIsMildTranslation(true);
-    //     router.push('/general');
-    // }
-    // const ProfessionalChoosen = () => {
-    //     setIsChoosen(true);
-    //     setIsMildTranslation(false);
-    //     router.push('/professional');
-    // }
-    // const scrolling = () => {
-    // }
-    return (
-        <div className={styles.container}>
-            <div className={styles.bgSlideshow}>
-                <div className={styles.bgSlide}></div>
-                <div className={styles.bgSlide}></div>
-                <div className={styles.bgSlide}></div>
-                <div className={styles.bgSlide}></div>
-                <div className={styles.bgSlide}></div>
-            </div>
-            <div className={styles.bgOverlay}>
-                <p className={styles.title}>LiveTrancer</p>
-                <p className={styles.description}>あなたの声を、より丁寧に、</p>
-                <p className={styles.description}>専門用語をより分かりやすく</p>
-                <button className={styles.startButton}>
-                    <Link href="/dashboard" className={styles.Start}>
-                        Start
-                    </Link>
-                </button>
-            </div>
+      <main className={styles.main}>
+        <div className={styles.centerPeople}></div>
+        <div className={styles.centerPeopleContent}>
+          <h1>REAL TIME</h1>
+          <h1>VOICE CHANGER</h1>
+          <p>Experience real-time voice transformation with the power of AI.</p>
         </div>
-    );
+      </main>
+    </div>
+  );
 }
