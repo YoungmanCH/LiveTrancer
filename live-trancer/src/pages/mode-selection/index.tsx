@@ -1,24 +1,26 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import styles from './dashboard.module.css';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import io from "socket.io-client";
+        {/* DEMOページ*/}
+//         2. デモエリア（Try Nowセクション）
+// リアルタイムデモ: ユーザーが音声をアップロードまたはマイクから録音して、リアルタイムで音声がテキストに変換され、加工されたテキストをもとに音声に戻して返答する機能を提供。
+// インタラクティブなUIで「話す」ボタンと「聞く」ボタンを設置し、ユーザーが簡単に試せるように。
+// デモの結果をリアルタイムで表示する領域を設け、ユーザーに変換されたテキストと音声を確認させる。
+
+
+import styles from './modeSelection.module.css';
 import { useRouter } from 'next/router';
 
-interface DashboardProps {
+interface ModeSelectionProps {
     isChoosen: boolean;
     setIsChoosen: (value: boolean) => void;
     isMildTranslation: boolean;
     setIsMildTranslation: (value: boolean) => void;
 }
 
-export default function Dashboard({
-    isChoosen,
+export default function ModeSelection({
     setIsChoosen,
-    isMildTranslation,
     setIsMildTranslation
-}: DashboardProps) {
+}: ModeSelectionProps) {
     const router = useRouter();
     const GeneralChoosen = () => {
         setIsChoosen(true);
@@ -33,7 +35,7 @@ export default function Dashboard({
     }
     return (
         <div className={styles.container}>
-            <p className={styles.title}>モードを選択</p>
+            <p className={styles.title}>デモンストレーションのモードを選択</p>
             <div className={styles.buttonContainer}>
                 <div className={styles.generalContainer}>
                     <h2>General</h2>

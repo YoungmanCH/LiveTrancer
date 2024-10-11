@@ -7,10 +7,11 @@ const Headerfhosadhiofo = forwardRef<HTMLDivElement>((_, ref) => {
     <header className={styles.header} ref={ref}>
       <div className={styles.logo}>LIVE TRANCER</div>
       <nav className={styles.navbar}>
-        <Link href="/">Home</Link>
+        <Link href="/home">Home</Link>
         <Link href="/about">About Us</Link>
-        <Link href="/products">Products</Link>
+        <Link href="/apis">APIs</Link>
         <Link href="/news">News</Link>
+        <Link href="/signIn">SignIn</Link>
       </nav>
     </header>
   );
