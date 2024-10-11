@@ -1,0 +1,89 @@
+.ApiSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px;
+  background-color: #f9f9f9;
+}
+
+.imageContainer {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding: 20px;
+  max-width: 45%;
+}
+
+.transformTextImage {
+  margin-bottom: 20px;
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.imageHeader {
+  max-width: 100%;
+}
+
+.imageTitle {
+  margin-top: 0px;
+  color: #333;
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.imageDescription {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.textContainer {
+  max-width: 44%;
+}
+
+.apiTitle {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.description {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #e67e22;
+}
+
+.statLabel {
+  font-size: 1rem;
+  color: #666;
+}

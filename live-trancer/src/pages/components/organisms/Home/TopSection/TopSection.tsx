@@ -8,7 +8,7 @@ const TopSection = () => {
       <div className={styles.centerPeopleContent}>
         <h1>REAL-TIME</h1>
         <h1>VOICE CHANGER</h1>
-        <p>Experience real-time voice transformation with the power of AI.</p>
+        <p>音声をテキストに、そしてまた音声に。リアルタイムの変換を体感せよ。</p>
       </div>
     </section>
   );

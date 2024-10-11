@@ -36,8 +36,8 @@ const SampleSection = () => {
   return (
     <section className={styles.sampleSection}>
       <div className={styles.sampleContainer}>
-        <div className={styles.headerSection}>
-          <h1>Real-time audio processing</h1>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Real-time audio processing</h1>
           <a href="#" className={styles.seeAll}>
             See All →
           </a>
