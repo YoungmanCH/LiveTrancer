@@ -6,6 +6,9 @@ import sttImage from '../../public/images/stt.png';
 import transformTextImage from '../../public/images/transformText.png';
 import ttsImage from '../../public/images/tts.png';
 import apiImage from '../../public/images/api.png';
+import realtimeResponseImage from '../../public/images/realtimeResponse.png';
+import automationImage from '../../public/images/automation.png';
+import iotImage from '../../public/images/iot.png';
 
 export {
   smilingBrightlyGirlImage,
@@ -16,4 +19,7 @@ export {
   transformTextImage,
   ttsImage,
   apiImage,
+  realtimeResponseImage,
+  automationImage,
+  iotImage,
 };
