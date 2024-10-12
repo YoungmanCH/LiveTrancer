@@ -7,6 +7,7 @@ import TransformTextSection from "../components/organisms/Home/TransformTextSect
 import TtsSection from "../components/organisms/Home/TtsSection/TtsSection";
 import ApiSection from "../components/organisms/Home/ApiSection/ApiSection";
 import StsSection from "../components/organisms/Home/StsSection/StsSection";
+import UseCasesSection from "../components/organisms/Home/UseCasesSection/UseCasesSection";
 import ContactSection from "../components/organisms/Home/ContactSection/ContactSection";
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
         <TtsSection></TtsSection>
         <ApiSection></ApiSection>
         <StsSection></StsSection>
+        <UseCasesSection></UseCasesSection>
         <ContactSection></ContactSection>
 
         {/* 概要説明セクション*/}

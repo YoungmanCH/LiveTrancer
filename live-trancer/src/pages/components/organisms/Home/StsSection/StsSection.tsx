@@ -1,51 +1,66 @@
 import React from "react";
 import Image from "next/image";
 import styles from "./StsSection.module.css";
-import { sttImage } from "../../../../../images";
+import { realtimeResponseImage, automationImage, iotImage } from "../../../../../images";
 
-const StsSection = () => {
-  return (
-    <section className={styles.sttSection}>
-      <div className={styles.textContainer}>
-        <h1 className={styles.title}>LiveTrancer STSで音声対応を無人化</h1>
-        <p className={styles.description}>
-          STT機能では、音声を即座にテキストへと変換し、高精度でリアルタイムに文字起こしが可能です。複数言語に対応し、ビジネス、教育、カスタマーサポートなどさまざまな用途で活用できます。
-        </p>
-        <div className={styles.stats}>
-          <div className={styles.statItem}>
-            <span className={styles.statValue}>98%</span>
-            <span className={styles.statLabel}>精度</span>
-          </div>
-          <div className={styles.statItem}>
-            <span className={styles.statValue}>0.02秒</span>
-            <span className={styles.statLabel}>遅延</span>
-          </div>
-          <div className={styles.statItem}>
-            <span className={styles.statValue}>日本語/英語</span>
-            <span className={styles.statLabel}>対応言語</span>
-          </div>
-        </div>
-      </div>
-      <div className={styles.imageContainer}>
-        <div className={styles.sttImage}>
-          <Image
-            src={sttImage}
-            alt="STT image"
-            width={700}
-            height={700}
-            className={styles.image}
-          />
-        </div>
-        <div className={styles.imageHeader}>
-          <h3 className={styles.imageTitle}>いつでもどこでも、簡単に。</h3>
-          <p className={styles.imageDescription}>
-            スマホでもPCでも、オンライン環境さえあれば、いつでもどこでもリアルタイムに音声をテキストに変換可能。使いやすいインターフェースで、日常の会話やビジネスシーンを支えます。
+const StsSection = () => (
+  <section className={styles.stsSection}>
+    <div className={styles.header}>
+      <h1 className={styles.title}>LiveTrancer STSで音声対応を無人化</h1>
+      <p className={styles.description}>
+        音声の自動化と無人化をリアルタイムで実現するソリューション
+      </p>
+    </div>
+
+    <div className={styles.cardsContainer}>
+      <div className={styles.card}>
+        <Image
+          src={realtimeResponseImage}
+          alt="Real-time response's image"
+          layout="responsive"
+          className={styles.image}
+        />
+        <div className={styles.cardContent}>
+          <h3 className={styles.cardTitle}>リアルタイム音声対応</h3>
+          <p className={styles.cardDescription}>
+            音声をリアルタイムで認識し、適切な音声でレスポンスすることで、多言語対応や音声モデレーションが可能。
           </p>
+          <div className={styles.badge}>Label Name</div>
         </div>
       </div>
-    </section>
-  );
-};
+      <div className={styles.card}>
+        <Image
+          src={automationImage}
+          alt="Automation image"
+          layout="responsive"
+          className={styles.image}
+        />
+        <div className={styles.cardContent}>
+          <h3 className={styles.cardTitle}>無人化対応</h3>
+          <p className={styles.cardDescription}>
+            自動化された音声ガイドや応答システムにより、人的リソースを削減し、完全無人化が可能。
+          </p>
+          <div className={styles.badge}>Label Name</div>
+        </div>
+      </div>
+      <div className={styles.card}>
+        <Image
+          src={iotImage}
+          alt="Iot image"
+          layout="responsive"
+          className={styles.image}
+        />
+        <div className={styles.cardContent}>
+          <h3 className={styles.cardTitle}>柔軟な対応性</h3>
+          <p className={styles.cardDescription}>
+            様々なハードウェア（レジ、IoTデバイス、ロボット）と連携し、音声対応システムを簡単に導入可能。
+          </p>
+          <div className={styles.badge}>Label Name</div>
+        </div>
+      </div>
+    </div>
+  </section>
+);
 
 export default StsSection;
 
