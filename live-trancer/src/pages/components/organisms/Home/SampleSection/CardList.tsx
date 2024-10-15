@@ -14,6 +14,10 @@ interface CardListProps {
 }
 
 const CardList: React.FC<CardListProps> = ({ cards }) => {
+  if (!cards || cards.length === 0) {
+    return <p>No cards available</p>;
+  }
+
   return (
     <div className={styles.cardsContainer}>
       {cards.map((card, index) => (

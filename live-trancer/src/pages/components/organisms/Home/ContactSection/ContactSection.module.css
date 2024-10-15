@@ -1,0 +1,82 @@
+.contactSection {
+  margin: 0 auto;
+  padding: 100px;
+  background-image: url("/images/contactUsBackground.png");
+}
+
+.contactContainer {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 60px 40px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contactHeader {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  color: black;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 14px;
+  text-align: left;
+}
+/* 
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.inputRow {
+  display: flex;
+  gap: 10px;
+}
+
+.inputGroup {
+  flex: 1;
+}
+
+.input, .textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  outline: none;
+}
+
+.textarea {
+  resize: none;
+  height: 100px;
+}
+
+.input:focus, .textarea:focus {
+  border-color: #4A90E2;
+  box-shadow: 0 0 4px rgba(74, 144, 226, 0.5);
+}
+
+.submitButton {
+  background-color: #3543e1;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 2px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submitButton:hover {
+  background-color: #357ABD;
+} */

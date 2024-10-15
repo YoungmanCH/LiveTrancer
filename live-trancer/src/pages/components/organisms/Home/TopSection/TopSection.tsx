@@ -4,11 +4,10 @@ import styles from "./TopSection.module.css";
 const TopSection = () => {
   return (
     <section className={styles.topSection}>
-      <div className={styles.centerPeople}></div>
-      <div className={styles.centerPeopleContent}>
-        <h1>REAL-TIME</h1>
-        <h1>VOICE CHANGER</h1>
-        <p>音声をテキストに、そしてまた音声に。リアルタイムの変換を体感せよ。</p>
+      <div className={styles.content}>
+        <h1>Real-Time</h1>
+        <h1>Speak, Convert, Express</h1>
+        <p>話し、変換し、伝える&mdash;すべてが瞬時に。新しいビジネスから日常体験を今すぐ。</p>
       </div>
     </section>
   );

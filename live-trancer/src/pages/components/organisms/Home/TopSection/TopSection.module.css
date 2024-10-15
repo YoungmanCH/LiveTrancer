@@ -1,50 +1,35 @@
 .topSection {
-  background-image: url("/images/electricBackground.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+  background: linear-gradient(#000000, #121212, #000000);
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
+  
 }
 
-.centerPeople {
-  background-image: url("/images/people.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 50%;
-  height: 40vh;
-  position: absolute;
-  top: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0.85;
-  z-index: 1;
-}
-
-.centerPeopleContent {
+.content {
   text-align: center;
   color: white;
-  padding: 80px;
+  padding: 40px;
   margin-top: 20vh;
+  margin-bottom: 15vh;
   z-index: 2;
   position: relative;
   opacity: 1;
-  background: linear-gradient(90deg, #ffff20, #ff00ff, #10a7ff);
+  background: linear-gradient(90deg, #ffff20, #ff00ff, #ff4800);
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.centerPeopleContent h1 {
+.content h1 {
   font-size: 5rem;
-  margin-bottom: 20px;
+  margin: 30px;
 }
 
-.centerPeopleContent p {
+.content p {
   font-size: 1.2rem;
   margin-top: 10px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
 }

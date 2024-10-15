@@ -9,7 +9,7 @@ export default function Home() {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-  res.writeHead(302, { Location: '/home' });
+  res.writeHead(302, { Location: "/home" });
   res.end();
   return { props: {} };
 };
