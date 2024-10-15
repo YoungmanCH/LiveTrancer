@@ -9,6 +9,11 @@ import apiImage from '../../public/images/api.png';
 import realtimeResponseImage from '../../public/images/realtimeResponse.png';
 import automationImage from '../../public/images/automation.png';
 import iotImage from '../../public/images/iot.png';
+import noManImage from '../../public/images/noMan.png';
+import automatedVoiceImage from '../../public/images/automatedVoice.png';
+import automatedRetailImage from '../../public/images/automatedRetail.png';
+import publicFacilityImage from '../../public/images/publicFacility.png';
+import contactUsBackgroundImage from '../../public/images/contactUsBackground.png';
 
 export {
   smilingBrightlyGirlImage,
@@ -22,4 +27,9 @@ export {
   realtimeResponseImage,
   automationImage,
   iotImage,
+  noManImage,
+  automatedVoiceImage,
+  automatedRetailImage,
+  publicFacilityImage,
+  contactUsBackgroundImage,
 };

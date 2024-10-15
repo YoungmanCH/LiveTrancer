@@ -1,83 +1,75 @@
 .useCasesSection {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 40px;
-  background-color: white;
+  flex-direction: column;
+  background-color: #07080a;
+  color: white;
+  font-family: "Arial", sans-serif;
+  padding: 200px 30px 30px 30px;
 }
 
-.textContainer {
-  max-width: 44%;
+.header {
+  padding: 20px 20px 100px 20px;
+  max-width: 80%;
+  text-align: left;
 }
 
-.title {
-  font-size: 2.5rem;
+.headerTitle {
+  color: #ebebeb;
+  font-size: 48px;
   font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
-.description {
-  font-size: 1.2rem;
-  color: #666;
-  margin-bottom: 30px;
+.headerDescription {
+  color: #727171;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
-.stats {
+
+.gridContainer {
   display: flex;
   flex-direction: column;
+  gap: 40px;
+  padding: 30px;
+}
+
+.gridItem {
+  display: flex;
+  align-items: end;
   gap: 20px;
+  padding-bottom: 180px;
 }
 
-.statItem {
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-}
-
-.statValue {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #e67e22;
-}
-
-.statLabel {
-  font-size: 1rem;
-  color: #666;
+.reverse {
+  flex-direction: row-reverse;
 }
 
 .imageContainer {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  padding: 20px;
-  max-width: 45%;
+  flex: 1;
 }
 
-.ttsImage {
-  margin-bottom: 20px;
-  width: auto;
+.textContainer {
+  flex: 1;
+  text-align: left;
+  padding: 0px 20px 20px 10px;
 }
 
 .image {
   max-width: 100%;
   height: auto;
   border-radius: 10px;
+  object-fit: cover;
 }
 
-.imageHeader {
-  max-width: 100%;
-}
 
-.imageTitle {
-  color: #333;
-  margin-top: 0px;
-  font-size: 1.6rem;
+.title {
+  font-size: 24px;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
-.imageDescription {
-  font-size: 1.2rem;
+.description {
+  font-size: 16px;
   color: #666;
 }

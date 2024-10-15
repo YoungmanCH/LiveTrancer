@@ -1,5 +1,7 @@
 <h1 align="center">LiveTrancer</h1>
 
+## 公式サイト:
+<a href="https://livetrancer.com">https://livetrancer.com</a>
 
 ## Overview:
 LiveTrancer is a web application that summarizes audio input in real-time and outputs the summarized content in both audio and text formats. This app is designed to quickly and concisely capture important information in various scenarios, such as meetings, presentations, customer support, and educational environments.
@@ -23,12 +25,28 @@ Accessible on both PCs and smartphones.
 #### Frontend: 
 - Next.js
 - TypeScript
+- 
+#### Backend: 
+- TypeScript
+- Flask
+- Python
+  
+#### Data Transmission
+- WebSocket
 
 #### Audio Processing: 
-- Deepgram API
+- Google STT
+- Google TTS
+  
+#### Voice Changer
+- voicevox
+
+#### Text Transcription
+- ChatGPT 4-omni or ELYZA
 
 #### Deployment: 
-- Firebase
+- AWS
+- EmailJS
 
 ## Use Cases:
 

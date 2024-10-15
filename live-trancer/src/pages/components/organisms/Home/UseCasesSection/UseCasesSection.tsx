@@ -1,50 +1,95 @@
 import React from "react";
 import Image from "next/image";
 import styles from "./UseCasesSection.module.css";
-import { ttsImage } from "../../../../../images";
+import { noManImage, automatedVoiceImage, automatedRetailImage, publicFacilityImage } from "../../../../../images";
 
 const UseCasesSection = () => {
   return (
     <section className={styles.useCasesSection}>
-      <div className={styles.textContainer}>
-        <h1 className={styles.title}>
-          予測導入事例
-        </h1>
-        <p className={styles.description}>
-          LiveTrancerのTTS機能は、加工されたテキストを目的に応じた音声にリアルタイムで変換。複数の音声パターンや自然なイントネーションに対応し、ユーザーに合った音声体験を提供します。ビジネスや教育、エンターテインメントシーンでも幅広く活用可能。
+      <div className={styles.header}>
+        <h1 className={styles.headerTitle}>予測導入事例</h1>
+        <p className={styles.headerDescription}>
+          LiveTrancer
+          STS（Speech-to-Speech）は、音声をリアルタイムで認識し、必要に応じて他の音声に変換する高度な音声自動化システムです。これにより、多言語対応や音声モデレーションが可能となり、さまざまな業界で効率化と無人化を実現します。以下は、LiveTrancer
+          STSが活用される予測導入事例の一部です。
         </p>
-        <div className={styles.stats}>
-          <div className={styles.statItem}>
-            <span className={styles.statValue}>51種類</span>
-            <span className={styles.statLabel}>音声パターン</span>
-          </div>
-          <div className={styles.statItem}>
-            <span className={styles.statValue}>0.03秒</span>
-            <span className={styles.statLabel}>遅延</span>
-          </div>
-          <div className={styles.statItem}>
-            <span className={styles.statValue}>日本語/英語</span>
-            <span className={styles.statLabel}>対応言語</span>
-          </div>
-        </div>
       </div>
-      <div className={styles.imageContainer}>
-        <div className={styles.ttsImage}>
-          <Image
-            src={ttsImage}
-            alt="TTS image"
-            width={700}
-            height={700}
-            className={styles.image}
-          />
+
+      <div className={styles.gridContainer}>
+        <div className={styles.gridItem}>
+          <div className={styles.imageContainer}>
+            <Image
+              src={noManImage}
+              alt="No man's Image"
+              width={700}
+              height={700}
+              className={styles.image}
+            />
+          </div>
+          <div className={styles.textContainer}>
+            <h2 className={styles.title}>無人レジの音声対応化</h2>
+            <p className={styles.description}>
+              無人レジにSTSを導入することで、顧客は音声ガイドに従いスムーズに支払いを完了できます。
+              多言語対応が可能で、多国籍の顧客にも適応。レジの操作方法を音声でリアルタイムに案内します。
+            </p>
+          </div>
         </div>
-        <div className={styles.imageHeader}>
-          <h3 className={styles.imageTitle}>
-            あらゆるシーンに最適な音声体験を、しかも瞬時に。
-          </h3>
-          <p className={styles.imageDescription}>
-            51種類以上の音声パターンと300ミリ秒以内の低遅延で、瞬時に加工されたテキストを用途に合わせた最適な音声に変換。高いカスタマイズ性で、聞く人に応じた柔軟な音声体験を実現します。
-          </p>
+
+        <div className={`${styles.gridItem} ${styles.reverse}`}>
+          <div className={styles.imageContainer}>
+            <Image
+              src={automatedVoiceImage}
+              alt="Automated voice's Image"
+              width={700}
+              height={700}
+              className={styles.image}
+            />
+          </div>
+          <div className={styles.textContainer}>
+            <h2 className={styles.title}>自動音声応答システムの無人化</h2>
+            <p className={styles.description}>
+              カスタマーサポートのIVRシステムにSTSを組み込み、ユーザーが問い合わせをすると自動音声で返答します。
+              24時間対応可能な無人システムを実現し、顧客満足度を向上します。
+            </p>
+          </div>
+        </div>
+
+        <div className={styles.gridItem}>
+          <div className={styles.imageContainer}>
+            <Image
+              src={automatedRetailImage}
+              alt="Automated retail's image"
+              width={700}
+              height={700}
+              className={styles.image}
+            />
+          </div>
+          <div className={styles.textContainer}>
+            <h2 className={styles.title}>対話型無人店舗の実現</h2>
+            <p className={styles.description}>
+              顧客が店頭で商品について質問すると、STSがリアルタイムで音声応答し、購入手続きを音声のみで完了します。
+              家電量販店やコンビニエンスストアでの自動案内システムに適用できます。
+            </p>
+          </div>
+        </div>
+
+        <div className={`${styles.gridItem} ${styles.reverse}`}>
+          <div className={styles.imageContainer}>
+            <Image
+              src={publicFacilityImage}
+              alt="Public facility' image"
+              width={700}
+              height={700}
+              className={styles.image}
+            />
+          </div>
+          <div className={styles.textContainer}>
+            <h2 className={styles.title}>公共施設での多言語対応案内システム</h2>
+            <p className={styles.description}>
+              観光案内所や空港で、観光客が音声で質問すると、リアルタイムで適切な言語に変換し案内します。
+              訪問者が多言語での案内を求める場面での活用が可能です。
+            </p>
+          </div>
         </div>
       </div>
     </section>
