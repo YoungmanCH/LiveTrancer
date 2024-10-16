@@ -2,7 +2,7 @@ import numpy as np
 from flask import Flask
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
-from integration.transcription.src import stt_to_tranc
+from ..integration.transcription.src import stt_to_tranc
 # from integration.transcription.test import test_stt_to_wav
 # from integration.transcription.test import test_stt_to_seconds10
 # from integration.transcription.test import test_stt
@@ -13,7 +13,7 @@ socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins="*")
 
 ### <- stt_to_tranc.py ->
 # WebSocket接続時の処理
-@socketio.on('connect')
+@socketio.on('connect') 
 def handle_connect():
     print("クライアントが接続されました")
     emit('response', {'message': 'WebSocketに接続しました'})
