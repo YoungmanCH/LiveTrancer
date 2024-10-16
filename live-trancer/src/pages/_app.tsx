@@ -8,9 +8,20 @@ function App({ Component, pageProps }: AppProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [isMildTranslation, setIsMildTranslation] = useState(true);
   
+  // 状態を pageProps に渡して、各ページから使えるようにする
+  const props = {
+    ...pageProps,
+    isChoosen,
+    setIsChoosen,
+    isRecording,
+    setIsRecording,
+    isMildTranslation,
+    setIsMildTranslation,
+  };
+
   return (
     <HomeLayout>
-      <Component {...pageProps} />
+      <Component {...props} />
     </HomeLayout>
   );
 }

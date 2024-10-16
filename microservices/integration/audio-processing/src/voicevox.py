@@ -5,10 +5,10 @@ from io import BytesIO
 import wave
 import threading
 
-
 class Speaker():
     def __init__(self) -> None:
-        self.core = VoicevoxCore(open_jtalk_dict_dir=Path("open_jtalk/open_jtalk_dic_utf_8-1.11"))
+        open_jtalk_dict_dir_path = "/Users/youngman/practice/LiveTrancer/open_jtalk/open_jtalk_dic_utf_8-1.11"
+        self.core = VoicevoxCore(open_jtalk_dict_dir=Path(open_jtalk_dict_dir_path))
         self.speaker_id = 1
         self.core.load_model(self.speaker_id)
         self.audio = pyaudio.PyAudio()
@@ -24,13 +24,13 @@ class Speaker():
 
     def start_speaking(self):
         self.can_speak = True
-        speak = threading.Thread(target=self.speak)
+        speak = threading.Thread(target=self._speak)
         speak.start()
 
     def finish_speaking(self):
         self.can_speak = False
 
-    def speak(self):
+    def _speak(self):
         while self.can_speak:
             for stock in self.wave_stocks:
                 if not self.can_speak:

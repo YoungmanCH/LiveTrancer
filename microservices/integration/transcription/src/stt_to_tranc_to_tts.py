@@ -1,228 +1,105 @@
-import queue
-import re
-import sys
+import wave
+import numpy as np
 import time
-from google.cloud import speech
-import pyaudio
-
-# Audio recording parameters
-STREAMING_LIMIT = 240000  # 4 minutes
-SAMPLE_RATE = 16000
-CHUNK_SIZE = int(SAMPLE_RATE / 10)  # 100ms
-SILENCE_THRESHOLD = 1.0  # 無音を検出するためのしきい値（秒）
-PHRASE_PAUSE = 0.8  # フレーズ区切りのポーズ（秒）
-
-RED = "\033[0;31m"
-GREEN = "\033[0;32m"
-YELLOW = "\033[0;33m"
-
-def get_current_time() -> int:
-    """Return Current Time in MS."""
-    return int(round(time.time() * 1000))
-
-class ResumableMicrophoneStream:
-    """Opens a recording stream as a generator yielding the audio chunks."""
-
-    def __init__(self, rate, chunk_size):
-        self._rate = rate
-        self.chunk_size = chunk_size
-        self._num_channels = 1
-        self._buff = queue.Queue()
-        self.closed = True
-        self.start_time = get_current_time()
-        self.restart_counter = 0
-        self.audio_input = []
-        self.last_audio_input = []
-        self.result_end_time = 0
-        self.is_final_end_time = 0
-        self.final_request_end_time = 0
-        self.bridging_offset = 0
-        self.last_transcript_was_final = False
-        self.new_stream = True
-        self.silence_start = None  # 無音の開始時間
-        self._audio_interface = pyaudio.PyAudio()
-        self._audio_stream = self._audio_interface.open(
-            format=pyaudio.paInt16,
-            channels=self._num_channels,
-            rate=self._rate,
-            input=True,
-            frames_per_buffer=self.chunk_size,
-            stream_callback=self._fill_buffer,
-        )
-
-    def __enter__(self):
-        self.closed = False
-        return self
-
-    def __exit__(self, type, value, traceback):
-        self._audio_stream.stop_stream()
-        self._audio_stream.close()
-        self.closed = True
-        self._buff.put(None)
-        self._audio_interface.terminate()
-
-    def _fill_buffer(self, in_data, *args, **kwargs):
-        self._buff.put(in_data)
-        return None, pyaudio.paContinue
-
-    def generator(self):
-        """Stream Audio from microphone to API and to local buffer."""
-        while not self.closed:
-            data = []
-
-            if self.new_stream and self.last_audio_input:
-                chunk_time = STREAMING_LIMIT / len(self.last_audio_input)
-
-                if chunk_time != 0:
-                    if self.bridging_offset < 0:
-                        self.bridging_offset = 0
-
-                    if self.bridging_offset > self.final_request_end_time:
-                        self.bridging_offset = self.final_request_end_time
-
-                    chunks_from_ms = round(
-                        (self.final_request_end_time - self.bridging_offset)
-                        / chunk_time
-                    )
-
-                    self.bridging_offset = round(
-                        (len(self.last_audio_input) - chunks_from_ms) * chunk_time
-                    )
-
-                    for i in range(chunks_from_ms, len(self.last_audio_input)):
-                        data.append(self.last_audio_input[i])
-
-                self.new_stream = False
-
-            chunk = self._buff.get()
-            self.audio_input.append(chunk)
-
-            if chunk is None:
-                return
-            data.append(chunk)
-
-            while True:
-                try:
-                    chunk = self._buff.get(block=False)
-                    if chunk is None:
-                        return
-                    data.append(chunk)
-                    self.audio_input.append(chunk)
-                except queue.Empty:
-                    break
-
-            yield b"".join(data)
-
+from google.cloud import speech, texttospeech  # Google STTとTTSをインポート
 import openai  # ChatGPT API用ライブラリ
 
-def process_text_with_chatgpt(transcript):
-    """ChatGPT 4-omniを使用して、テキストを加工する関数"""
-    prompt = (
-        "「{}」を、専門用語を噛み砕きつつ高校生にも分かりやすいよう言い直してください。"
-        "字数はあまり変えないで。想定としては音声出力をします。"
-    ).format(transcript)
+# WAVファイルの設定
+SAMPLE_RATE = 16000  # サンプルレート
+CHANNELS = 1  # モノラル
+SAMPLE_WIDTH = 2  # 16ビット
 
-    # ChatCompletion.create を使用
-    response = openai.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=150,
-        temperature=0.7
-    )
-    
-    # ChatGPTからの生成テキストを取得
-    return response.choices[0].message.content.strip()
+audio_frames = []
+start_time = None
+MIN_SILENCE_DURATION = 0.8  # 無音区間のしきい値（秒）
 
-def save_to_file(text):
-    """加工したテキストをファイルに保存"""
-    with open("processed_output.txt", "a", encoding="utf-8") as file:
-        file.write(text + "\n")
-        
-def listen_print_loop(responses, stream):
-    num_chars_printed = 0
-    last_speech_time = time.time()
-    previous_transcript = ""  # Store the previous final transcript
+def save_to_wav(audio_data, filename="test_stt_to_wav.wav"):
+    """取得した音声データをWAVファイルに保存"""
+    with wave.open(filename, 'wb') as wf:
+        wf.setnchannels(CHANNELS)
+        wf.setsampwidth(SAMPLE_WIDTH)
+        wf.setframerate(SAMPLE_RATE)
+        wf.writeframes(audio_data)
 
-    for response in responses:
-        if get_current_time() - stream.start_time > STREAMING_LIMIT:
-            stream.start_time = get_current_time()
-            break
-
-        if not response.results:
-            continue
-
-        result = response.results[0]
-        transcript = result.alternatives[0].transcript
-        new_part = ""
-
-        # Check if the phrase or pause indicates the end of a sentence
-        if re.search(r'[。！？]', transcript) or time.time() - last_speech_time > PHRASE_PAUSE:
-            result.is_final = True
-
-        if result.is_final:
-            print(f"previous_transcript: {previous_transcript}")
-            print(f"transcript: {transcript}")
-            
-            # Extract only the new part by removing the previous final transcript from the current one
-            new_part = transcript[len(previous_transcript):]
-            print(f"new_part: {new_part}")
-
-            # Output the new part
-            sys.stdout.write(GREEN)
-            sys.stdout.write("\033[K")
-            sys.stdout.write(f"Final: {new_part}\n")
-
-            # Process with ChatGPT 4-omni
-            processed_text = process_text_with_chatgpt(new_part)
-            save_to_file(processed_text)
-            sys.stdout.write(f"Processed: {processed_text}\n")
-
-            # Update previous_transcript for future comparison
-            previous_transcript = transcript
-            num_chars_printed = 0
-            stream.last_transcript_was_final = True
-            last_speech_time = time.time()  # Update the pause timestamp
-        else:
-            sys.stdout.write(RED)
-            sys.stdout.write(f"Interim: {transcript}\r")  # Print interim transcript
-            stream.last_transcript_was_final = False
-
-
-
-def main():
+def transcribe_audio(audio_data):
+    """Google STTで音声データをテキストに変換"""
     client = speech.SpeechClient()
     config = speech.RecognitionConfig(
         encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
         sample_rate_hertz=SAMPLE_RATE,
         language_code="ja-JP",
-        max_alternatives=1,
+        enable_automatic_punctuation=True
     )
+    response = client.recognize(config=config, audio=speech.RecognitionAudio(content=audio_data))
+    if response.results:
+        transcript = response.results[0].alternatives[0].transcript
+        print(f'Transcript: {transcript}')
+        save_original_transcription_to_file(transcript)
 
-    streaming_config = speech.StreamingRecognitionConfig(
-        config=config, interim_results=True
+        # ChatGPTでテキストを加工し、TTSで音声化
+        processed_text = process_text_with_chatgpt(transcript)
+        save_transcription_to_file(processed_text)
+        synthesize_speech(processed_text)  # TTSで音声を生成
+    else:
+        print("STTの解析結果がありません。")
+
+def process_text_with_chatgpt(transcript):
+    """ChatGPTでテキストを加工"""
+    prompt = f"「{transcript}」を、高校生にも分かりやすい言葉にしてください。"
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}]
     )
+    return response.choices[0].message.content.strip()
 
-    mic_manager = ResumableMicrophoneStream(SAMPLE_RATE, CHUNK_SIZE)
-    sys.stdout.write('\nListening, say "終了" to stop.\n\n')
-    sys.stdout.write("End (ms)       Transcript Results/Status\n")
-    sys.stdout.write("=====================================================\n")
+# 音声はvoicevoxではなく、google ttsのデフォルト音声を使用
+def synthesize_speech(text):
+    """TTSで加工済みテキストを音声に変換し保存"""
+    client = texttospeech.TextToSpeechClient()
+    input_text = texttospeech.SynthesisInput(text=text)
+    voice = texttospeech.VoiceSelectionParams(
+        language_code="ja-JP", ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
+    )
+    audio_config = texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.LINEAR16)
 
-    with mic_manager as stream:
-        while not stream.closed:
-            audio_generator = stream.generator()
-            requests = (
-                speech.StreamingRecognizeRequest(audio_content=content)
-                for content in audio_generator
-            )
+    response = client.synthesize_speech(input=input_text, voice=voice, audio_config=audio_config)
+    output_filename = "output_audio.wav"
+    with open(output_filename, "wb") as out:
+        out.write(response.audio_content)
+    print(f"音声ファイル {output_filename} が生成されました。")
 
-            responses = client.streaming_recognize(streaming_config, requests)
+def save_original_transcription_to_file(transcript):
+    """元のテキストを保存"""
+    with open("original_transcription.txt", "a", encoding="utf-8") as f:
+        f.write(transcript + "\n")
 
-            # Now, put the transcription responses to use.
-            listen_print_loop(responses, stream)
+def save_transcription_to_file(transcript):
+    """加工済みテキストを保存"""
+    with open("transcription.txt", "a", encoding="utf-8") as f:
+        f.write(transcript + "\n")
 
+def process_audio(data):
+    """無音区間ごとに音声を区切り、STTで解析する"""
+    global start_time, audio_frames
 
-if __name__ == "__main__":
-    main()
+    silence_threshold = 1000
+
+    def is_silence(audio_chunk):
+        """無音区間の判定"""
+        return max(audio_chunk) < silence_threshold
+
+    audio_frames.append(data)
+
+    if start_time is None:
+        start_time = time.time()
+
+    if is_silence(data):
+        if time.time() - start_time >= MIN_SILENCE_DURATION:
+            combined_data = np.concatenate(audio_frames).tobytes()
+            save_to_wav(combined_data)
+            transcribe_audio(combined_data)
+            audio_frames = []
+            start_time = None
+    else:
+        print("音声データを蓄積中...")
+
