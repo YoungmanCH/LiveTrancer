@@ -13,6 +13,8 @@ microservices/api/__pycache__/
 package-lock.json
 package.json
 
+test_stt_to_wav.wav
+
 __init__.py
 backend/
 
