@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone, faRefresh } from "@fortawesome/free-solid-svg-icons";
 import styles from "./professional.module.css";
-import { RecordingProcessor } from "../../services/RecordingProcessor";
+import { RecordingProcessor } from "../../services/recordingProcessor";
 import { ChatMessageProps } from "../../types/type";
 import { switchMode } from "../utils/utils";
 import { useSocketHandler } from "../../hooks/useSocketHandler";

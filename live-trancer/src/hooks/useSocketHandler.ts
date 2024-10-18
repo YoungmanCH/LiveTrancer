@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { SocketConnection } from "../services/SocketConnection";
-import { SttResponseDisplay } from "../services/SttResponseDisplay";
+import { SocketConnection } from "../services/socketConnection";
+import { SttResponseDisplay } from "../services/sttResponseDisplay";
 import { ChatMessageProps } from "../types/type";
 
 interface UseSocketHandlerProps {
