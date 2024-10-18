@@ -2,7 +2,6 @@ import wave
 import numpy as np
 import time
 from google.cloud import speech
-from process_text_with_chatgpt import process_text_with_chatgpt
 
 # WAVファイルの設定
 SAMPLE_RATE = 16000  # サンプルレート
@@ -52,10 +51,6 @@ def transcribe_audio(audio_data):
 
                 # 元のテキストをファイルに保存
                 save_original_transcription_to_file(transcript)
-                
-                # テキストをChatGPTで加工してファイルに保存
-                processed_text = process_text_with_chatgpt(transcript)
-                save_transcription_to_file(processed_text)
                 
     except Exception as e:
         print(f"An error occurred during STT processing: {e}")

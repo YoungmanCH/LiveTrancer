@@ -2,7 +2,6 @@ import wave
 import numpy as np
 import time
 from google.cloud import speech
-from process_text_with_chatgpt import process_text_with_chatgpt
 
 # WAVファイルの設定
 SAMPLE_RATE = 16000  # サンプルレート
@@ -13,6 +12,7 @@ SAMPLE_WIDTH = 2  # 16ビット
 audio_frames = []
 start_time = None  # 音声収集の開始時間
 MIN_SILENCE_DURATION = 0.8  # 文節を区切るための無音区間のしきい値（秒）
+FINISHED_MIN_SILENCE_DURATION = 5
 
 # 直近の音声域〜無音声域までの音声を同ファイルに上書き保存。
 def save_to_wav(audio_data, filename="test_stt_to_wav.wav"):
@@ -52,10 +52,6 @@ def transcribe_audio(audio_data):
 
                 # 元のテキストをファイルに保存
                 save_original_transcription_to_file(transcript)
-                
-                # テキストをChatGPTで加工してファイルに保存
-                processed_text = process_text_with_chatgpt(transcript)
-                save_transcription_to_file(processed_text)
                 
     except Exception as e:
         print(f"An error occurred during STT processing: {e}")
@@ -103,8 +99,6 @@ def process_audio(data):
         if time.time() - start_time >= MIN_SILENCE_DURATION:
             # 蓄積した音声データを結合してWAVファイルに保存
             combined_data = np.concatenate(audio_frames).tobytes()
-            save_to_wav(combined_data)
-            print("Audio data saved to test_stt_to_wav.wav")
 
             # Google STTで音声データを解析
             transcribe_audio(combined_data)
@@ -112,8 +106,15 @@ def process_audio(data):
             # 音声データと開始時間をリセット
             audio_frames = []
             start_time = None
+        elif time.time() - start_time >= FINISHED_MIN_SILENCE_DURATION:
+            combined_data = np.concatenate(audio_frames).tobytes()
+            print("Audio data saved to test_stt_to_wav.wav")
+            save_to_wav(combined_data)
 
     else:
         # 無音区間でなければ音声を継続的に蓄積する
         print("音声データを継続して蓄積中...")
 
+
+
+# このコードのリファクタリングを行いましょう。

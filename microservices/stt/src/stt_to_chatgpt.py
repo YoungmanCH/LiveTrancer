@@ -2,7 +2,7 @@ import wave
 import numpy as np
 import time
 from google.cloud import speech
-from process_text_with_chatgpt import process_text_with_chatgpt
+from chatgpt_service.src.text_to_chatgpt import process_text_with_chatgpt
 
 # WAVファイルの設定
 SAMPLE_RATE = 16000  # サンプルレート

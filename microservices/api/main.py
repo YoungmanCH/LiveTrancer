@@ -2,7 +2,8 @@ import numpy as np
 from flask import Flask
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
-from integration.transcription.src import stt_to_tranc
+from stt.src import stt
+# from integration.transcription.src import stt_to_tranc
 # from integration.transcription.test import test_stt_to_wav
 # from integration.transcription.test import test_stt_to_seconds10
 # from integration.transcription.test import test_stt
@@ -11,13 +12,14 @@ app = Flask(__name__)
 CORS(app)  # CORSを全オリジンに対して許可
 socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins="*")
 
-### <- stt_to_tranc.py ->
+### <- stt_to_tranc.py。今は、stt.pyでも併用してます ->
 # WebSocket接続時の処理
 @socketio.on('connect')
 def handle_connect():
     print("クライアントが接続されました")
     emit('response', {'message': 'WebSocketに接続しました'})
 
+### <- stt.py ->
 # WebSocketでSTTリクエストを受信
 @socketio.on('stt')
 def handle_stt(audio_data):
@@ -27,10 +29,27 @@ def handle_stt(audio_data):
         data = np.frombuffer(audio_data, dtype=np.int16)
 
         # 音声データをtest_stt_to_wavに渡して処理
-        stt_to_tranc.process_audio(data)
+        stt.process_audio(data)
 
     except Exception as e:
         emit('stt_response', {'error': str(e)})
+
+
+### <- stt_to_tranc.py ->
+# # WebSocketでSTTリクエストを受信
+# @socketio.on('stt')
+# def handle_stt(audio_data):
+#     try:
+#         # audio_dataを受信し、test_stt_to_wavモジュールの関数に処理を委譲
+#         print("音声データを受信しました")
+#         data = np.frombuffer(audio_data, dtype=np.int16)
+
+#         # 音声データをtest_stt_to_wavに渡して処理
+#         stt_to_tranc.process_audio(data)
+
+#     except Exception as e:
+#         emit('stt_response', {'error': str(e)})
+
 
 ### <- test_stt.py ->
 # # WebSocketでSTTリクエストを受信
@@ -110,4 +129,4 @@ def error_handler(e):
     print(f'エラー: {e}')
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5003)
