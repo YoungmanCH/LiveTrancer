@@ -1,16 +1,12 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import styles from "./professional.module.css";
+import { useState } from "react";
+import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone, faRefresh } from "@fortawesome/free-solid-svg-icons";
-import io from "socket.io-client";
-import { useRouter } from "next/router";
-
-interface ChatMessage {
-  sender: string;
-  message: string;
-}
+import styles from "./professional.module.css";
+import { RecordingProcessor } from "../../services/RecordingProcessor";
+import { ChatMessageProps } from "../../types/type";
+import { switchMode } from "../utils/utils";
+import { useSocketHandler } from "../../hooks/useSocketHandler";
 
 interface HomeProps {
   isRecording: boolean;
@@ -25,108 +21,25 @@ export default function Professional({
   isMildTranslation,
   setIsMildTranslation,
 }: HomeProps) {
-  const [inputText, setInputText] = useState("");
-  const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
+  const [chatLog, setChatLog] = useState<ChatMessageProps[]>([]);
   const [socket, setSocket] = useState<any>(null);
   const [transcription, setTranscription] = useState<string>("");
-  const SOCKET_URL = "http://127.0.0.1:5000"; // FlaskサーバーのURL
+  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
+  const [processor, setProcessor] = useState<ScriptProcessorNode | null>(null);
   const router = useRouter();
-  let audioContext: AudioContext | null = null;
-  let processor: ScriptProcessorNode | null = null;
+  const recordingProcessor = new RecordingProcessor();
+  const SOCKET_URL = "http://127.0.0.1:5003";
 
-  useEffect(() => {
-    const socketConnection = io(SOCKET_URL);
-    setSocket(socketConnection);
-    // Socket接続時の確認
-    socketConnection.on("connect", () => {
-      console.log("Socket connected:", socketConnection.id);
-    });
+  useSocketHandler({
+    SOCKET_URL,
+    setSocket,
+    setTranscription,
+    setChatLog,
+    audioContext,
+  });
 
-    // サーバーからのSTT結果を受け取る
-    socketConnection.on("stt_response", (data) => {
-      if (data.text) {
-        setTranscription(data.text); // STT結果を表示
-        setChatLog((prevLog) => [
-          ...prevLog,
-          { sender: "AI", message: data.text },
-        ]);
-      } else if (data.error) {
-        console.error("Error:", data.error);
-      }
-    });
-
-    // WebSocket接続のクリーンアップ
-    return () => {
-      socketConnection.disconnect();
-      if (audioContext) {
-        audioContext.close();
-      }
-    };
-  }, []);
-
-  const startRecording = async () => {
-    if (!socket) return;
-    console.log("Recording started");
-
-    // AudioContextとScriptProcessorNodeのセットアップ
-    audioContext = new AudioContext();
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const input = audioContext.createMediaStreamSource(stream);
-
-    // ScriptProcessorNodeを作成して、オーディオ処理を行う
-    processor = audioContext.createScriptProcessor(1024, 1, 1);
-    input.connect(processor);
-    processor.connect(audioContext.destination);
-
-    processor.onaudioprocess = (event) => {
-      const inputBuffer = event.inputBuffer.getChannelData(0);
-      const downsampledBuffer = downsampleBuffer(inputBuffer, audioContext!.sampleRate, 16000);
-      console.log('downsampledBuffer: ', downsampledBuffer);
-      socket.emit("stt", downsampledBuffer); // 変換した音声データを送信
-      console.log("サーバーに音声データを送信中");
-    };
-
-    setIsRecording(true);
-  };
-
-  const stopRecording = () => {
-    if (processor && audioContext) {
-      processor.disconnect();
-      audioContext.close();
-      console.log("Recording stopped");
-    }
-    setIsRecording(false);
-  };
-
-  const downsampleBuffer = (buffer: Float32Array, sampleRate: number, outSampleRate: number) => {
-    if (outSampleRate > sampleRate) {
-      console.error("ダウンサンプリングレートは、元のサンプルレートより小さくする必要があります。");
-      return buffer;
-    }
-    const sampleRateRatio = sampleRate / outSampleRate;
-    const newLength = Math.round(buffer.length / sampleRateRatio);
-    const result = new Int16Array(newLength);
-    let offsetResult = 0;
-    let offsetBuffer = 0;
-    while (offsetResult < result.length) {
-      const nextOffsetBuffer = Math.round((offsetResult + 1) * sampleRateRatio);
-      let accum = 0;
-      let count = 0;
-      for (let i = offsetBuffer; i < nextOffsetBuffer && i < buffer.length; i++) {
-        accum += buffer[i];
-        count++;
-      }
-      result[offsetResult] = Math.min(1, accum / count) * 0x7fff;
-      offsetResult++;
-      offsetBuffer = nextOffsetBuffer;
-    }
-    console.log('ダウンサンプリング中です');
-    return result.buffer;
-  };
-
-  const modeSwitch = () => {
-    router.push("/general");
-    setIsMildTranslation(!isMildTranslation);
+  const _handleSwitchMode = () => {
+    switchMode({ router, isMildTranslation, setIsMildTranslation });
   };
 
   return (
@@ -145,7 +58,7 @@ export default function Professional({
                   log.sender === "User" ? styles.userMessage : styles.aiMessage
                 }
               >
-                <strong>{log.sender}:</strong> {log.message}
+                <strong>{log.sender}:</strong> {log.message ?? ""}
               </div>
             ))}
           </div>
@@ -158,7 +71,20 @@ export default function Professional({
         <div className={isRecording ? styles.recordBox : styles.inputBox}>
           <p>{isRecording ? "Recording..." : ""}</p>
           <button
-            onClick={isRecording ? stopRecording : startRecording}
+            onClick={() =>
+              isRecording
+                ? recordingProcessor.stopRecording({
+                    audioContext,
+                    processor,
+                    setIsRecording,
+                  })
+                : recordingProcessor.startRecording({
+                    setIsRecording,
+                    socket,
+                    setAudioContext,
+                    setProcessor,
+                  })
+            }
             className={isRecording ? styles.onRecord : styles.recordButton}
           >
             <FontAwesomeIcon
@@ -169,7 +95,7 @@ export default function Professional({
             />
           </button>
           <button
-            onClick={modeSwitch}
+            onClick={_handleSwitchMode}
             className={isRecording ? styles.none : styles.modeSwitch}
           >
             <FontAwesomeIcon

@@ -1,6 +1,6 @@
 <h1 align="center">LiveTrancer</h1>
 
-## 公式サイト:
+## Official Web Site:
 <a href="https://livetrancer.com">https://livetrancer.com</a>
 
 ## Overview:

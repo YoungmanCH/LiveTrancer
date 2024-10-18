@@ -2,7 +2,7 @@ import wave
 import numpy as np
 import time
 from google.cloud import speech, texttospeech
-from process_text_with_chatgpt import process_text_with_chatgpt
+from chatgpt_service.src.text_to_chatgpt import process_text_with_chatgpt
 
 # WAVファイルの設定
 SAMPLE_RATE = 16000  # サンプルレート
@@ -12,6 +12,7 @@ SAMPLE_WIDTH = 2  # 16ビット
 audio_frames = []
 start_time = None
 MIN_SILENCE_DURATION = 0.8  # 無音区間のしきい値（秒）
+FINISHED_MIN_SILENCE_DURATION = 15
 
 def save_to_wav(audio_data, filename="test_stt_to_wav.wav"):
     """取得した音声データをWAVファイルに保存"""
@@ -46,6 +47,7 @@ def transcribe_audio(audio_data):
 # 音声はvoicevoxではなく、google ttsのデフォルト音声を使用
 def synthesize_speech(text):
     """TTSで加工済みテキストを音声に変換し保存"""
+    print('ttsを実行中')
     client = texttospeech.TextToSpeechClient()
     input_text = texttospeech.SynthesisInput(text=text)
     voice = texttospeech.VoiceSelectionParams(
@@ -71,6 +73,7 @@ def save_transcription_to_file(transcript):
 
 def process_audio(data):
     """無音区間ごとに音声を区切り、STTで解析する"""
+    print('stsを実行中')
     global start_time, audio_frames
 
     silence_threshold = 1000
@@ -87,10 +90,12 @@ def process_audio(data):
     if is_silence(data):
         if time.time() - start_time >= MIN_SILENCE_DURATION:
             combined_data = np.concatenate(audio_frames).tobytes()
-            save_to_wav(combined_data)
             transcribe_audio(combined_data)
             audio_frames = []
             start_time = None
+        elif time.time() - start_time >= FINISHED_MIN_SILENCE_DURATION:
+          combined_data = np.concatenate(audio_frames).tobytes()
+          save_to_wav(combined_data)
     else:
         print("音声データを蓄積中...")
 
