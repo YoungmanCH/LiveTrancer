@@ -1,6 +1,6 @@
-import { AudioProcessing } from "./AudioProcessing";
-import { UserMediaStream } from "./UserMediaStream";
-import { AudioToSttStreamer } from "./AudioToSttStreamer";
+import { AudioProcessing } from "./audioProcessing";
+import { UserMediaStream } from "./userMediaStream";
+import { AudioToSttStreamer } from "./audioToSttStreamer";
 
 interface StartRecordingProps {
   setIsRecording: (value: boolean) => void;

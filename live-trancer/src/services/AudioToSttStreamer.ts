@@ -1,6 +1,6 @@
 import { DownsampleBufferProps } from "@/types/type";
 
-interface AudioToSTTStreamProps {
+interface AudioToSttStreamProps {
   input: MediaStreamAudioSourceNode;
   processor: ScriptProcessorNode;
   audioContext: AudioContext;
@@ -15,7 +15,7 @@ export class AudioToSttStreamer {
     this.pipelineConnector = new AudioPipelineConnector();
   }
 
-  public streamAudioToStt = (props: AudioToSTTStreamProps) => {
+  public streamAudioToStt = (props: AudioToSttStreamProps) => {
     const { input, processor, audioContext, socket, downsampleBuffer } = props;
 
     this.pipelineConnector.connectAudioPipeline({
