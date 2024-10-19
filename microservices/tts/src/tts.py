@@ -1,7 +1,5 @@
-import numpy as np
 from LiveTrancer.microservices.tts.src import google_tts
 from google.cloud import texttospeech
-from LiveTrancer.microservices.chatgpt_service.src.text_to_chatgpt import OpenAIProcessor
     
 class TTSProcessor:
     def transcribe_text_with_google_tts(self, text):
