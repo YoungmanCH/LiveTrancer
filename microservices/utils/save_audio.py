@@ -1,4 +1,3 @@
-import wave
 import numpy as np
 import time
 from LiveTrancer.microservices.utils import audio_file_saver
