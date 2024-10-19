@@ -90,7 +90,6 @@ class STTToChatGPTAudioProcessor:
         audio_file = audio_file_saver.AudioFileSaver()
         audio_file.save_original_transcription_to_file(transcript)
         
-        
     def _save_chatgpt_transcription_to_file(self, transcript):
         audio_file = audio_file_saver.AudioFileSaver()
         audio_file.save_chatgpt_transcription_to_file(transcript)

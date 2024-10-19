@@ -5,12 +5,12 @@ from LiveTrancer.microservices.tts.src import tts
 from LiveTrancer.microservices.utils import audio_file_saver
 from LiveTrancer.microservices.chatgpt_service.src.text_to_chatgpt import OpenAIProcessor
 
-class STSAudioProcessor:
+class STTToChatGPTToTTSAudioProcessor:
     _instance = None
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
-            cls._instance = super(STSAudioProcessor, cls).__new__(cls, *args, **kwargs)
+            cls._instance = super(STTToChatGPTToTTSAudioProcessor, cls).__new__(cls, *args, **kwargs)
         return cls._instance
     
     @classmethod
@@ -79,7 +79,7 @@ class STSAudioProcessor:
                 self._save_original_transcription_to_file(transcript)
                 self._save_chatgpt_transcription_to_file(transcripted_with_chatgpt_data)
                 
-                self._transcribe_text_with_google_tts(transcript)
+                self._transcribe_text_with_google_tts(transcripted_with_chatgpt_data)
         
     def _reset_frames_and_audio_segment_start_time(self):
         self.audio_frames = []
@@ -99,4 +99,4 @@ class STSAudioProcessor:
         
     def _transcribe_text_with_google_tts(self, text):
         tts_processor = tts.TTSProcessor()
-        tts_processor.transcribe_text_with_google_tts(text)
+        tts_processor.transcribe_text_with_google_tts(text)     
