@@ -2,7 +2,6 @@ import numpy as np
 import time
 from LiveTrancer.microservices.stt.src import google_stt
 from LiveTrancer.microservices.utils import audio_file_saver
-from LiveTrancer.microservices.chatgpt_service.src.text_to_chatgpt import OpenAIProcessor
 
 class STTAudioProcessor:
     _instance = None

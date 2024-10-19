@@ -2,7 +2,7 @@ import wave
 import numpy as np
 import time
 from google.cloud import speech, texttospeech
-from process_text_with_chatgpt import process_text_with_chatgpt
+from LiveTrancer.microservices.chatgpt_service.src.text_to_chatgpt import OpenAIProcessor
 
 # WAVファイルの設定
 SAMPLE_RATE = 16000  # サンプルレート
@@ -37,7 +37,8 @@ def transcribe_audio(audio_data):
         save_original_transcription_to_file(transcript)
 
         # ChatGPTでテキストを加工し、TTSで音声化
-        processed_text = process_text_with_chatgpt(transcript)
+        openAIProcessor = OpenAIProcessor()
+        processed_text = openAIProcessor.process_text_with_chatgpt(transcript)
         save_transcription_to_file(processed_text)
         synthesize_speech(processed_text)  # TTSで音声を生成
     else:
