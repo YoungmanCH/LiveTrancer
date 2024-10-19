@@ -20,8 +20,8 @@ def save_audio(data):
 
     if time.time() - start_time >= auto_save_duration:
         combined_data = np.concatenate(audio_frames).tobytes()
-        audioFileSaver = audio_file_saver.AudioFileSaver()
-        audioFileSaver.save_original_audio(combined_data)
+        audio_file = audio_file_saver.AudioFileSaver()
+        audio_file.save_original_audio(combined_data)
 
         # 音声データと開始時間をリセット
         audio_frames = []

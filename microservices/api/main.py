@@ -3,6 +3,7 @@ from flask import Flask
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 from LiveTrancer.microservices.stt.src import stt
+from LiveTrancer.microservices.stt.src import stt_to_chatgpt
 from LiveTrancer.microservices.utils import save_audio
 
 app = Flask(__name__)
@@ -22,7 +23,8 @@ def handle_stt(audio_data):
         data = np.frombuffer(audio_data, dtype=np.int16)
 
         save_audio.save_audio(data)
-        audio_processor = stt.STTAudioProcessor.get_instance()
+        audio_processor = stt_to_chatgpt.STTToChatGPTAudioProcessor.get_instance()
+        # audio_processor = stt.STTAudioProcessor.get_instance()
         audio_processor.process_audio(data)
 
     except Exception as e:

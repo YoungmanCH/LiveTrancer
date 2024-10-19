@@ -1,6 +1,8 @@
 import numpy as np
 import time
 from LiveTrancer.microservices.stt.src import google_stt
+from LiveTrancer.microservices.utils import audio_file_saver
+from LiveTrancer.microservices.chatgpt_service.src.text_to_chatgpt import OpenAIProcessor
 
 class STTAudioProcessor:
     _instance = None
@@ -50,7 +52,8 @@ class STTAudioProcessor:
     
     def _handle_audio_transcription(self):
         combined_audio_data = self._combined_audio()
-        self._transcribe_audio_with_google_stt(combined_audio_data)
+        responses = self._transcribe_audio_with_google_stt(combined_audio_data)
+        self._process_audio_with_stt_and_chatgpt(responses)
         self._reset_frames_and_audio_segment_start_time()
         
     def _combined_audio(self) -> bytes: 
@@ -60,11 +63,23 @@ class STTAudioProcessor:
         sample_rate = 16000
         language_code = "ja-JP"
         enable_automatic_punctuation = True
-        
         googleSTTProps = google_stt.GoogleSTTProps(sample_rate=sample_rate, language_code=language_code, enable_automatic_punctuation=enable_automatic_punctuation)
         googleSTT = google_stt.GoogleSTT(googleSTTProps)
-        googleSTT.transcribe_audio(audio_data)
+        
+        return googleSTT.transcribe_audio(audio_data)
+        
+    def _process_audio_with_stt_and_chatgpt(self, responses):
+        for response in responses:
+            for result in response.results:
+                transcript = result.alternatives[0].transcript
+                print(f'STT結果: {transcript}')
+                
+                self._save_original_transcription_to_file(transcript)
         
     def _reset_frames_and_audio_segment_start_time(self):
         self.audio_frames = []
         self.audio_segment_start_time = None
+        
+    def _save_original_transcription_to_file(self, transcript):
+        audio_file = audio_file_saver.AudioFileSaver()
+        audio_file.save_original_transcription_to_file(transcript)

@@ -18,3 +18,9 @@ class AudioFileSaver:
             wf.setsampwidth(sample_width)
             wf.setframerate(sample_rate)
             wf.writeframes(audio_data)
+            
+    def save_chatgpt_transcription_to_file(self, transcript):
+        """ChatGPTで加工されたテキストをファイルに保存"""
+        with open("chatgpt_transcription.txt", "a", encoding="utf-8") as f:
+            f.write(transcript + "\n")
+        print("加工されたテキストファイルを保存しています。chatgpt_transcription.txt")
