@@ -1,8 +1,8 @@
 import wave
 import numpy as np
 import time
-from google.cloud import speech, texttospeech  # Google STTとTTSをインポート
-import openai  # ChatGPT API用ライブラリ
+from google.cloud import speech, texttospeech
+from process_text_with_chatgpt import process_text_with_chatgpt
 
 # WAVファイルの設定
 SAMPLE_RATE = 16000  # サンプルレート
@@ -42,15 +42,6 @@ def transcribe_audio(audio_data):
         synthesize_speech(processed_text)  # TTSで音声を生成
     else:
         print("STTの解析結果がありません。")
-
-def process_text_with_chatgpt(transcript):
-    """ChatGPTでテキストを加工"""
-    prompt = f"「{transcript}」を、高校生にも分かりやすい言葉にしてください。"
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return response.choices[0].message.content.strip()
 
 # 音声はvoicevoxではなく、google ttsのデフォルト音声を使用
 def synthesize_speech(text):
