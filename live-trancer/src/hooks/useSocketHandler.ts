@@ -23,7 +23,7 @@ export const useSocketHandler = ({
   useEffect(() => {
     const socketConnection = new SocketConnection(SOCKET_URL);
     const initializedSocket = _handleInitializeSocket(socketConnection);
-    _handleProcessSttResponse(initializedSocket);
+    // _handleProcessSttResponse(initializedSocket);
 
     return () => {
       _handleCleanupSocket(socketConnection);

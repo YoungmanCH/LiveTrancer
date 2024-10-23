@@ -1,21 +1,13 @@
-import { DownsampleBufferProps } from "@/types/type";
+import { DownsampleBufferProps, AudioToStsStreamerProps } from "@/types/type";
 
-interface AudioToSttStreamProps {
-  input: MediaStreamAudioSourceNode;
-  processor: ScriptProcessorNode;
-  audioContext: AudioContext;
-  socket: any;
-  downsampleBuffer: (props: DownsampleBufferProps) => ArrayBuffer;
-}
-
-export class AudioToSttStreamer {
+export class AudioToStsStreamer {
   private pipelineConnector: AudioPipelineConnector;
 
   constructor() {
     this.pipelineConnector = new AudioPipelineConnector();
   }
 
-  public streamAudioToStt = (props: AudioToSttStreamProps) => {
+  public startStreamingAudioToSts = (props: AudioToStsStreamerProps) => {
     const { input, processor, audioContext, socket, downsampleBuffer } = props;
 
     this.pipelineConnector.connectAudioPipeline({
@@ -25,11 +17,23 @@ export class AudioToSttStreamer {
     });
 
     processor.onaudioprocess = (event: AudioProcessingEvent) => {
-      this._handleAudioProcess(event, audioContext, downsampleBuffer, socket);
+      this._handleStartAudioProcess(
+        event,
+        audioContext,
+        downsampleBuffer,
+        socket
+      );
     };
   };
 
-  private _handleAudioProcess = (
+  public stopStreamingAudioToSts(socket: any) {
+    socket.emit("stop_recording");
+    socket.on("stop_recording", (audioBuffer: any) =>
+      this._downloadAudioToSts(audioBuffer)
+    );
+  }
+
+  private _handleStartAudioProcess = (
     event: AudioProcessingEvent,
     audioContext: AudioContext,
     downsampleBuffer: (props: DownsampleBufferProps) => ArrayBuffer,
@@ -41,16 +45,30 @@ export class AudioToSttStreamer {
       sampleRate: audioContext.sampleRate,
     });
 
-    this._streamToSttServer(socket, downsampledBuffer);
+    this._postAudioToStsServer(socket, downsampledBuffer);
   };
 
-  private _streamToSttServer = (
+  private _postAudioToStsServer = (
     socket: any,
     downsampledBuffer: ArrayBuffer
   ) => {
-    socket.emit("stt", downsampledBuffer);
+    socket.emit("sts", downsampledBuffer);
     console.log("Audio data is streaming.");
   };
+
+  private _downloadAudioToSts(audioBuffer: any) {
+    if (audioBuffer && audioBuffer.byteLength > 0) {
+      const blob = new Blob([audioBuffer], { type: "audio/wav" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "sample_sts_audio.wav";
+      document.body.appendChild(link);
+      link.click();
+      console.log("Downloaded STS Audio.");
+    } else {
+      console.error("Received empty or invalid audio buffer.");
+    }
+  }
 }
 
 interface ConnectAudioPipelineProps {

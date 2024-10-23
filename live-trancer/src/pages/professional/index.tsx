@@ -74,15 +74,16 @@ export default function Professional({
             onClick={() =>
               isRecording
                 ? recordingProcessor.stopRecording({
-                    audioContext,
-                    processor,
-                    setIsRecording,
+                    socket: socket,
+                    audioContext: audioContext,
+                    processor: processor,
+                    setIsRecording: setIsRecording,
                   })
                 : recordingProcessor.startRecording({
-                    setIsRecording,
-                    socket,
-                    setAudioContext,
-                    setProcessor,
+                    setIsRecording: setIsRecording,
+                    socket: socket,
+                    setAudioContext: setAudioContext,
+                    setProcessor: setProcessor,
                   })
             }
             className={isRecording ? styles.onRecord : styles.recordButton}

@@ -1,50 +1,18 @@
-import { AudioProcessing } from "./audioProcessing";
-import { UserMediaStream } from "./userMediaStream";
-import { AudioToSttStreamer } from "./audioToSttStreamer";
-
-interface StartRecordingProps {
-  setIsRecording: (value: boolean) => void;
-  socket: any;
-  setAudioContext: (context: AudioContext) => void;
-  setProcessor: (processor: ScriptProcessorNode) => void;
-}
+import { RecordingProcessorHelper } from "./recordingProcessorHelper";
+import { AudioToStsStreamer } from "./audioToStsStreamer";
+import { StartRecordingProps } from "@/types/type";
 
 interface StopRecordingProps {
+  socket: any;
   audioContext: AudioContext | null;
   processor: ScriptProcessorNode | null;
   setIsRecording: (value: boolean) => void;
 }
 
 export class RecordingProcessor {
-  private audioProcessing: AudioProcessing = new AudioProcessing();
-  private userMediaStream: UserMediaStream = new UserMediaStream();
-  private audioToSttStreamer: AudioToSttStreamer = new AudioToSttStreamer();
-
   public async startRecording(props: StartRecordingProps) {
-    const { setIsRecording, socket, setAudioContext, setProcessor } = props;
-    if (!socket) return;
-
-    const audioContext = new AudioContext();
-    const stream = await this.userMediaStream.getUserDeviceMedia();
-
-    if (stream) {
-      const input = audioContext.createMediaStreamSource(stream);
-      const processor =
-        this.audioProcessing.createScriptProcessor(audioContext);
-      this.audioToSttStreamer.streamAudioToStt({
-        input,
-        processor,
-        audioContext,
-        socket,
-        downsampleBuffer: this.audioProcessing.downsampleBuffer,
-      });
-
-      setAudioContext(audioContext);
-      setProcessor(processor);
-      setIsRecording(true);
-    } else {
-      console.log("Failed to acquire MediaStream.");
-    }
+    const startHelper = new RecordingProcessorHelper();
+    startHelper.handleStartRecording(props);
   }
 
   public async stopRecording(props: StopRecordingProps) {
@@ -55,5 +23,11 @@ export class RecordingProcessor {
       console.log("通信を中断しました。");
     }
     setIsRecording(false);
+    this._stopStreamingAudioToSts(props.socket);
+  }
+
+  private _stopStreamingAudioToSts(socket: any) {
+    const audioToStsStreamer = new AudioToStsStreamer();
+    audioToStsStreamer.stopStreamingAudioToSts(socket);
   }
 }

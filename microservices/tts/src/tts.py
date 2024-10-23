@@ -10,4 +10,3 @@ class TTSProcessor:
         googleTTS = google_tts.GoogleTTS(google_tts_props)
             
         return googleTTS.transcribe_text(text)
-    
