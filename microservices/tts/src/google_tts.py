@@ -31,9 +31,10 @@ class GoogleTTS:
     def _execute_transcribe_text(self, text):
         input_text = texttospeech.SynthesisInput(text=text)
         response = self._synthesize_speech(input_text)
-        tts_audio = self._save_tts_audio(response.audio_content)
-        return tts_audio
-        
+        tts_result = response.audio_content
+        self._save_tts_audio(tts_result)
+        return tts_result
+    
     def _synthesize_speech(self, input_text):
         return self.client.synthesize_speech(input=input_text, voice=self.voice, audio_config=self.audio_config)
         
