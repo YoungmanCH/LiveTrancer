@@ -4,7 +4,6 @@ import { AudioToStsStreamer } from "./audioToStsStreamer";
 import { AudioToStsStreamerProps, StartRecordingProps } from "@/types/type";
 
 interface ProcessStreamingProps {
-  audioContext: AudioContext;
   stream: MediaStream;
   startRecordingProps: StartRecordingProps;
 }
@@ -18,12 +17,10 @@ export class RecordingProcessorHelper {
     const { socket } = props;
     if (!socket) return;
 
-    const audioContext = new AudioContext();
     const stream = await this._getUserDeviceMedia();
 
     if (stream) {
       this._processStreaming({
-        audioContext: audioContext,
         stream: stream,
         startRecordingProps: props,
       });
@@ -37,9 +34,12 @@ export class RecordingProcessorHelper {
   }
 
   private _processStreaming(props: ProcessStreamingProps) {
-    const { audioContext, stream, startRecordingProps } = props;
+    const { stream, startRecordingProps } = props;
+    const audioContext = new AudioContext();
+    
     const input = this._createMediaStreamSource(audioContext, stream);
     const processor = this._createScriptProcessor(audioContext);
+
     this._streamAudioToSts({
       input: input,
       processor: processor,
