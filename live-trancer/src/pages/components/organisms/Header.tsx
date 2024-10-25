@@ -5,7 +5,7 @@ import styles from './Header.module.css';
 const Headerfhosadhiofo = forwardRef<HTMLDivElement>((_, ref) => {
   return (
     <header className={styles.header} ref={ref}>
-      <div className={styles.logo}>LIVE TRANCER</div>
+      <Link href="/home" className={styles.logo}>LIVE TRANCER</Link>
       <nav className={styles.navbar}>
         <Link href="/home">Home</Link>
         <Link href="/about">About Us</Link>
