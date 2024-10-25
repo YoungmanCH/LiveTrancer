@@ -1,6 +1,6 @@
 import { AudioProcessing } from "./audioProcessing";
 import { UserMediaStream } from "./userMediaStream";
-import { AudioToStsStreamer } from "./audioToStsStreamer";
+import { AudioToStartStsStreamer } from "./audioToStartStsStreamer";
 import { AudioToStsStreamerProps, StartRecordingProps } from "@/types/type";
 
 interface ProcessStreamingProps {
@@ -11,7 +11,7 @@ interface ProcessStreamingProps {
 export class RecordingProcessorHelper {
   private audioProcessing: AudioProcessing = new AudioProcessing();
   private userMediaStream: UserMediaStream = new UserMediaStream();
-  private audioToStsStreamer: AudioToStsStreamer = new AudioToStsStreamer();
+  private audioToStartStsStreamer: AudioToStartStsStreamer = new AudioToStartStsStreamer();
 
   public async handleStartRecording(props: StartRecordingProps) {
     const { socket } = props;
@@ -36,7 +36,7 @@ export class RecordingProcessorHelper {
   private _processStreaming(props: ProcessStreamingProps) {
     const { stream, startRecordingProps } = props;
     const audioContext = new AudioContext();
-    
+
     const input = this._createMediaStreamSource(audioContext, stream);
     const processor = this._createScriptProcessor(audioContext);
 
@@ -67,6 +67,6 @@ export class RecordingProcessorHelper {
   }
 
   private _streamAudioToSts(props: AudioToStsStreamerProps) {
-    this.audioToStsStreamer.startStreamingAudioToSts(props);
+    this.audioToStartStsStreamer.startStreamingAudioToSts(props);
   }
 }

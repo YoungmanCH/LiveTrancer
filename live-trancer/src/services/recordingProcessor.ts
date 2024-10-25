@@ -1,5 +1,5 @@
 import { RecordingProcessorHelper } from "./recordingProcessorHelper";
-import { AudioToStsStreamer } from "./audioToStsStreamer";
+import { AudioToStopStsStreamer } from "./audioToStopStsStreamer";
 import { StartRecordingProps } from "@/types/type";
 
 interface StopRecordingProps {
@@ -27,7 +27,7 @@ export class RecordingProcessor {
   }
 
   private _stopStreamingAudioToSts(socket: any) {
-    const audioToStsStreamer = new AudioToStsStreamer();
-    audioToStsStreamer.stopStreamingAudioToSts(socket);
+    const audioToStopStsStreamer = new AudioToStopStsStreamer();
+    audioToStopStsStreamer.stopStreamingAudioToSts(socket);
   }
 }
