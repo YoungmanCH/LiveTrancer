@@ -14,6 +14,7 @@
   font-size: 24px;
   font-weight: bold;
   color: white;
+  text-decoration: none;
 }
 
 .navbar {
@@ -28,3 +29,8 @@
   font-size: 18px;
 }
 
+@media (max-width: 768px) {
+   .navbar {
+    display: none;
+   }
+}
