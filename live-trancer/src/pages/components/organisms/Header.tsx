@@ -11,7 +11,6 @@ const Headerfhosadhiofo = forwardRef<HTMLDivElement>((_, ref) => {
         <Link href="/about">About Us</Link>
         <Link href="/apis">APIs</Link>
         <Link href="/news">News</Link>
-        <Link href="/signIn">SignIn</Link>
       </nav>
     </header>
   );
