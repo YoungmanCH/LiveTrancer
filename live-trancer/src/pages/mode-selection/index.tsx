@@ -29,11 +29,11 @@ export default function ModeSelection({
     }
     return (
         <div className={styles.container}>
-            <p className={styles.title}>デモンストレーションのモードを選択</p>
+            <p className={styles.title}>お試しモードを選択</p>
             <div className={styles.buttonContainer}>
                 <div className={styles.trialContainer}>
-                    <h2>trial</h2>
-                    <p>IT用語、専門用語など 知識ゼロの状態でも理解出来るように 分かりやすく要約して翻訳してくれる機能。使いながら専門用語の意味を学べる！</p>
+                    <h2>TRIAL</h2>
+                    <p>このモードでは、会話をリアルタイムで文字に変換し、さらに加工済み音声として即時ダウンロードすることができます。</p>
                     <button className={styles.trialButton} onClick={trialChoosen}>
                         さっそく使ってみる
                     </button>

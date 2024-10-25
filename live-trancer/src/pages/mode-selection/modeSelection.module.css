@@ -5,11 +5,11 @@
   justify-content: center;
   height: 100vh;
   background-color: #f0f0f0;
-  padding: 20px; /* モバイル端末向けの余白 */
+  padding: 20px;
 }
 
 .title {
-  font-size: 2rem; /* モバイル端末用に少し小さめに設定 */
+  font-size: 2rem;
   font-weight: bold;
   font-family: 'Noto Serif JP';
   margin-bottom: 2rem;
@@ -26,20 +26,20 @@
   max-width: 1200px;
 }
 
-.generalContainer, .trialContainer {
-  width: 100%; /* モバイル端末では全幅 */
+.trialContainer {
+  width: 100%;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  margin-bottom: 20px; /* モバイルではスペースを追加 */
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
 }
 
-.generalButton, .trialButton {
+.trialButton {
   width: 100%;
   padding: 10px;
   font-size: 1.2rem;
@@ -51,22 +51,8 @@
   margin-top: auto;
 }
 
-.generalButton:hover {
-  background-color: #f7acbb;
-}
 .trialButton:hover {
   background-color: #3dd7d0;
-}
-
-.generalContainer p, .trialContainer p {
-  font-size: 1.2rem; /* モバイルではフォントサイズを少し小さく */
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-.generalContainer {
-  font-family: 'Noto Serif JP';
-  text-align: center;
 }
 
 .trialContainer {
@@ -74,33 +60,39 @@
   text-align: center;
 }
 
-/* タブレット用のレスポンシブ */
-@media (min-width: 768px) {
+.trialContainer p {
+  font-size: 1.0rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+/* モバイル用のレスポンシブ */
+@media (max-width: 767px) {
   .buttonContainer {
-    flex-direction: row;
+    flex-direction: column;
   }
 
-  .generalContainer, .trialContainer {
-    width: 45%; /* タブレットでは50%幅に設定 */
-    margin-bottom: 0;
+  .trialContainer {
+    width: 100%;
   }
 
-  .generalContainer p, .trialContainer p {
-    font-size: 1.4rem; /* タブレット用のフォントサイズ */
+  .trialContainer p {
+    font-size: 0.8rem;
   }
 }
 
-/* デスクトップ用のレスポンシブ */
-@media (min-width: 1024px) {
+/* タブレット用のレスポンシブ */
+@media (max-width: 1023px) {
   .title {
-    font-size: 2.5rem; /* デスクトップ用の大きなタイトル */
+    font-size: 2.2rem;
   }
 
-  .generalContainer, .trialContainer {
-    width: 30%; /* デスクトップでは30%幅 */
+  .trialContainer {
+    width: 70%;
   }
 
-  .generalContainer p, .trialContainer p {
-    font-size: 1.5rem; /* デスクトップ用のフォントサイズ */
+  .trialContainer p {
+    font-size: 1.0rem;
   }
 }
