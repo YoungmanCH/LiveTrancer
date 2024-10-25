@@ -8,6 +8,11 @@ export interface DownsampleBufferProps {
   sampleRate: number;
 }
 
+export interface HandleStartRecordingProps {
+  socket: any;
+  audioContext: AudioContext;
+}
+
 export interface AudioToStsStreamerProps {
   input: MediaStreamAudioSourceNode;
   processor: ScriptProcessorNode;
@@ -21,4 +26,11 @@ export interface StartRecordingProps {
   socket: any;
   setAudioContext: (context: AudioContext) => void;
   setProcessor: (processor: ScriptProcessorNode) => void;
+}
+
+export interface StopRecordingProps {
+  socket: any;
+  audioContext: AudioContext | null;
+  processor: ScriptProcessorNode | null;
+  setIsRecording: (value: boolean) => void;
 }

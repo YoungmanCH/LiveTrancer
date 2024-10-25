@@ -25,11 +25,10 @@ export class AudioToStartStsStreamer {
     this._postQueryDB(socket);
     const response_limit = await this._getQueryDBLimit(socket);
 
-    if (response_limit) {
+    if (!response_limit) {
       processor.onaudioprocess = (event: AudioProcessingEvent) => {
         this._handleAudioProcess(event, audioContext, downsampleBuffer, socket);
       };
-      this._incrementRequestCount();
     }
   };
 
@@ -65,7 +64,7 @@ export class AudioToStartStsStreamer {
     return new Promise((resolve) => {
       socket.on("query_db_response", (data: any) => {
         if (data.error) {
-          console.log("ERROR:", data.error);
+          console.log("失敗:", data.error);
           resolve(false);
         } else {
           console.log("本日の残り回数:", data.count);
@@ -77,10 +76,6 @@ export class AudioToStartStsStreamer {
 
   private _checkStartRecording(): boolean {
     return StsTrialClientLimiter.checkStartRecording();
-  }
-
-  private _incrementRequestCount() {
-    StsTrialClientLimiter.incrementRequestCount();
   }
 }
 
