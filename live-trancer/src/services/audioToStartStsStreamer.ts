@@ -1,4 +1,5 @@
 import { DownsampleBufferProps, AudioToStsStreamerProps } from "@/types/type";
+import { StsTrialClientLimiter } from "./stsTrialClientLimiter";
 
 export class AudioToStartStsStreamer {
   private pipelineConnector: AudioPipelineConnector;
@@ -7,8 +8,13 @@ export class AudioToStartStsStreamer {
     this.pipelineConnector = new AudioPipelineConnector();
   }
 
-  public startStreamingAudioToSts = (props: AudioToStsStreamerProps) => {
+  public startStreamingAudioToSts = async (props: AudioToStsStreamerProps) => {
     const { input, processor, audioContext, socket, downsampleBuffer } = props;
+
+    if (!this._checkStartRecording()) {
+      console.log("本日のリクエスト上限に達しています");
+      return;
+    }
 
     this.pipelineConnector.connectAudioPipeline({
       input,
@@ -16,20 +22,18 @@ export class AudioToStartStsStreamer {
       audioContext,
     });
 
-    processor.onaudioprocess = (event: AudioProcessingEvent) => {
-      this._handleStartAudioProcess(
-        event,
-        audioContext,
-        downsampleBuffer,
-        socket
-      );
-    };
-
     this._postQueryDB(socket);
-    this._getQueryDBLimit(socket);
+    const response_limit = await this._getQueryDBLimit(socket);
+
+    if (response_limit) {
+      processor.onaudioprocess = (event: AudioProcessingEvent) => {
+        this._handleAudioProcess(event, audioContext, downsampleBuffer, socket);
+      };
+      this._incrementRequestCount();
+    }
   };
 
-  private _handleStartAudioProcess = (
+  private _handleAudioProcess = (
     event: AudioProcessingEvent,
     audioContext: AudioContext,
     downsampleBuffer: (props: DownsampleBufferProps) => ArrayBuffer,
@@ -54,17 +58,29 @@ export class AudioToStartStsStreamer {
 
   private _postQueryDB(socket: any) {
     socket.emit("query_db");
-    console.log("クエリを実行中")
+    console.log("クエリを実行中");
   }
 
-  private _getQueryDBLimit(socket: any) {
-    socket.on('query_db_response', (data: any) => {
-      if (data.error) {
-          console.log('ERROR:', data.error);
-      } else {
-        console.log('本日の残り回数:', data.count);
-      }
-  });
+  private _getQueryDBLimit(socket: any): Promise<boolean> {
+    return new Promise((resolve) => {
+      socket.on("query_db_response", (data: any) => {
+        if (data.error) {
+          console.log("ERROR:", data.error);
+          resolve(false);
+        } else {
+          console.log("本日の残り回数:", data.count);
+          resolve(true);
+        }
+      });
+    });
+  }
+
+  private _checkStartRecording(): boolean {
+    return StsTrialClientLimiter.checkStartRecording();
+  }
+
+  private _incrementRequestCount() {
+    StsTrialClientLimiter.incrementRequestCount();
   }
 }
 
