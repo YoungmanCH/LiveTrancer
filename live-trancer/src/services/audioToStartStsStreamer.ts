@@ -1,6 +1,6 @@
 import { DownsampleBufferProps, AudioToStsStreamerProps } from "@/types/type";
 
-export class AudioToStsStreamer {
+export class AudioToStartStsStreamer {
   private pipelineConnector: AudioPipelineConnector;
 
   constructor() {
@@ -28,13 +28,6 @@ export class AudioToStsStreamer {
     this._postQueryDB(socket);
     this._getQueryDBLimit(socket);
   };
-
-  public stopStreamingAudioToSts(socket: any) {
-    socket.emit("stop_recording");
-    socket.on("stop_recording", (audioBuffer: any) =>
-      this._downloadAudioToSts(audioBuffer)
-    );
-  }
 
   private _handleStartAudioProcess = (
     event: AudioProcessingEvent,
@@ -72,20 +65,6 @@ export class AudioToStsStreamer {
         console.log('本日の残り回数:', data.count);
       }
   });
-  }
-
-  private _downloadAudioToSts(audioBuffer: any) {
-    if (audioBuffer && audioBuffer.byteLength > 0) {
-      const blob = new Blob([audioBuffer], { type: "audio/wav" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "sample_sts_audio.wav";
-      document.body.appendChild(link);
-      link.click();
-      console.log("Downloaded STS Audio.");
-    } else {
-      console.error("Received empty or invalid audio buffer.");
-    }
   }
 }
 
