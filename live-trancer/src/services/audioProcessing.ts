@@ -6,6 +6,10 @@ export class AudioProcessing {
   private readonly numberOfOutputChannels: number = 1;
   private readonly downsampleRate: number = 16000;
 
+  public activateAudioContext(): AudioContext {
+    return new AudioContext();
+  }
+
   public createScriptProcessor(
     audioContext: AudioContext
   ): ScriptProcessorNode {

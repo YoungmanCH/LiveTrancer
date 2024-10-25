@@ -1,28 +1,29 @@
 import { AudioProcessing } from "./audioProcessing";
 import { UserMediaStream } from "./userMediaStream";
 import { AudioToStartStsStreamer } from "./audioToStartStsStreamer";
-import { AudioToStsStreamerProps, StartRecordingProps } from "@/types/type";
+import { HandleStartRecordingProps, AudioToStsStreamerProps } from "@/types/type";
 
 interface ProcessStreamingProps {
+  socket: any;
+  audioContext: AudioContext;
   stream: MediaStream;
-  startRecordingProps: StartRecordingProps;
 }
 
 export class RecordingProcessorHelper {
   private audioProcessing: AudioProcessing = new AudioProcessing();
   private userMediaStream: UserMediaStream = new UserMediaStream();
-  private audioToStartStsStreamer: AudioToStartStsStreamer = new AudioToStartStsStreamer();
+  private audioToStartStsStreamer: AudioToStartStsStreamer =
+    new AudioToStartStsStreamer();
 
-  public async handleStartRecording(props: StartRecordingProps) {
-    const { socket } = props;
-    if (!socket) return;
-
+  public async handleStartRecording(props: HandleStartRecordingProps) {
+    const { socket, audioContext } = props;
     const stream = await this._getUserDeviceMedia();
 
     if (stream) {
       await this._processStreaming({
+        socket: socket,
+        audioContext: audioContext,
         stream: stream,
-        startRecordingProps: props,
       });
     } else {
       console.log("Failed to acquire MediaStream.");
@@ -34,28 +35,23 @@ export class RecordingProcessorHelper {
   }
 
   private async _processStreaming(props: ProcessStreamingProps) {
-    const { stream, startRecordingProps } = props;
-    const audioContext = new AudioContext();
+    const { socket, audioContext, stream } = props;
 
-    const input = this._createMediaStreamSource(audioContext, stream);
+    const input = this._createMediaStreamSource(stream, audioContext);
     const processor = this._createScriptProcessor(audioContext);
 
     await this._streamAudioToSts({
       input: input,
       processor: processor,
       audioContext: audioContext,
-      socket: startRecordingProps.socket,
+      socket: socket,
       downsampleBuffer: this.audioProcessing.downsampleBuffer,
     });
-
-    startRecordingProps.setAudioContext(audioContext);
-    startRecordingProps.setProcessor(processor);
-    startRecordingProps.setIsRecording(true);
   }
 
   private _createMediaStreamSource(
-    audioContext: AudioContext,
-    stream: MediaStream
+    stream: MediaStream,
+    audioContext: AudioContext
   ): MediaStreamAudioSourceNode {
     return audioContext.createMediaStreamSource(stream);
   }
