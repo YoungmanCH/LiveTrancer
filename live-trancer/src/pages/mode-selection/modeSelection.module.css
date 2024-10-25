@@ -26,7 +26,7 @@
   max-width: 1200px;
 }
 
-.generalContainer, .professionalContainer {
+.generalContainer, .trialContainer {
   width: 100%; /* モバイル端末では全幅 */
   background-color: #fff;
   border-radius: 10px;
@@ -39,7 +39,7 @@
   justify-content: space-between;
 }
 
-.generalButton, .professionalButton {
+.generalButton, .trialButton {
   width: 100%;
   padding: 10px;
   font-size: 1.2rem;
@@ -54,11 +54,11 @@
 .generalButton:hover {
   background-color: #f7acbb;
 }
-.professionalButton:hover {
+.trialButton:hover {
   background-color: #3dd7d0;
 }
 
-.generalContainer p, .professionalContainer p {
+.generalContainer p, .trialContainer p {
   font-size: 1.2rem; /* モバイルではフォントサイズを少し小さく */
   font-weight: bold;
   margin-bottom: 1rem;
@@ -69,7 +69,7 @@
   text-align: center;
 }
 
-.professionalContainer {
+.trialContainer {
   font-family: 'Noto Serif JP';
   text-align: center;
 }
@@ -80,12 +80,12 @@
     flex-direction: row;
   }
 
-  .generalContainer, .professionalContainer {
+  .generalContainer, .trialContainer {
     width: 45%; /* タブレットでは50%幅に設定 */
     margin-bottom: 0;
   }
 
-  .generalContainer p, .professionalContainer p {
+  .generalContainer p, .trialContainer p {
     font-size: 1.4rem; /* タブレット用のフォントサイズ */
   }
 }
@@ -96,11 +96,11 @@
     font-size: 2.5rem; /* デスクトップ用の大きなタイトル */
   }
 
-  .generalContainer, .professionalContainer {
+  .generalContainer, .trialContainer {
     width: 30%; /* デスクトップでは30%幅 */
   }
 
-  .generalContainer p, .professionalContainer p {
+  .generalContainer p, .trialContainer p {
     font-size: 1.5rem; /* デスクトップ用のフォントサイズ */
   }
 }
