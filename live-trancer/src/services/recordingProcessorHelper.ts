@@ -20,7 +20,7 @@ export class RecordingProcessorHelper {
     const stream = await this._getUserDeviceMedia();
 
     if (stream) {
-      this._processStreaming({
+      await this._processStreaming({
         stream: stream,
         startRecordingProps: props,
       });
@@ -33,14 +33,14 @@ export class RecordingProcessorHelper {
     return await this.userMediaStream.getUserDeviceMedia();
   }
 
-  private _processStreaming(props: ProcessStreamingProps) {
+  private async _processStreaming(props: ProcessStreamingProps) {
     const { stream, startRecordingProps } = props;
     const audioContext = new AudioContext();
 
     const input = this._createMediaStreamSource(audioContext, stream);
     const processor = this._createScriptProcessor(audioContext);
 
-    this._streamAudioToSts({
+    await this._streamAudioToSts({
       input: input,
       processor: processor,
       audioContext: audioContext,
@@ -66,7 +66,7 @@ export class RecordingProcessorHelper {
     return this.audioProcessing.createScriptProcessor(audioContext);
   }
 
-  private _streamAudioToSts(props: AudioToStsStreamerProps) {
-    this.audioToStartStsStreamer.startStreamingAudioToSts(props);
+  private async _streamAudioToSts(props: AudioToStsStreamerProps) {
+    await this.audioToStartStsStreamer.startStreamingAudioToSts(props);
   }
 }
