@@ -1,6 +1,6 @@
 import numpy as np
 import io
-from flask import Flask
+from flask import Flask, request
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 from LiveTrancer.microservices.utils import save_audio
@@ -9,14 +9,14 @@ from LiveTrancer.microservices.stt.src import stt_to_chatgpt
 from LiveTrancer.microservices.tts.src import tts
 from LiveTrancer.microservices.sts.src import sts
 from LiveTrancer.microservices.sts.src import stt_to_chatgpt_to_tts
+from LiveTrancer.microservices.ip_rimiter.src.ip_handler import IPAddressFetcher, IPLimitProcessor
 
 AUDIO_BUFFER = io.BytesIO() 
 
 app = Flask(__name__)
-CORS(app)  # CORSを全オリジンに対して許可
+CORS(app)
 socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins="*")
 
-# WebSocket接続時の処理
 @socketio.on('connect')
 def handle_connect():
     print("クライアントが接続されました")
@@ -53,9 +53,21 @@ def handle_stop_recording():
     except Exception as e:
         emit('stop_recording', {'error': str(e)})
 
-@socketio.on_error()
-def error_handler(e):
-    print(f'エラー: {e}')
+# @socketio.on_error()
+# def error_handler(e):
+#     print(f'エラー: {e}')
+
+@socketio.on('query_db')
+def handle_query_db():
+    print('クエリが実行されました')
+    ip_address = IPAddressFetcher.fetch_from_request(request)
+    ipLimiter = IPLimitProcessor()
+    
+    if not ipLimiter.check_ip_limit(ip_address):
+        emit('query_db_response', {'error': '1日のリクエスト上限に達しました'}, room=request.sid)
+        print('1日のリクエスト上限に達しました')
+    else:
+        emit('query_db_response', {'count': '本日の残り回数'}, room=request.sid)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0', port=5003)

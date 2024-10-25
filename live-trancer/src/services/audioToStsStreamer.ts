@@ -24,6 +24,9 @@ export class AudioToStsStreamer {
         socket
       );
     };
+
+    this._postQueryDB(socket);
+    this._getQueryDBLimit(socket);
   };
 
   public stopStreamingAudioToSts(socket: any) {
@@ -55,6 +58,21 @@ export class AudioToStsStreamer {
     socket.emit("sts", downsampledBuffer);
     console.log("Audio data is streaming.");
   };
+
+  private _postQueryDB(socket: any) {
+    socket.emit("query_db");
+    console.log("クエリを実行中")
+  }
+
+  private _getQueryDBLimit(socket: any) {
+    socket.on('query_db_response', (data: any) => {
+      if (data.error) {
+          console.log('ERROR:', data.error);
+      } else {
+        console.log('本日の残り回数:', data.count);
+      }
+  });
+  }
 
   private _downloadAudioToSts(audioBuffer: any) {
     if (audioBuffer && audioBuffer.byteLength > 0) {
