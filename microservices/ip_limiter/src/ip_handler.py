@@ -1,7 +1,7 @@
 from flask import Request
 import datetime
 from psycopg2 import Error
-from LiveTrancer.microservices.ip_rimiter.src.rds_handler import AmazonRDSConnection, PostgresDBProcessor
+from LiveTrancer.microservices.ip_limiter.src.rds_handler import AmazonRDSConnection, PostgresDBProcessor
 
 class IPAddressFetcher:
     @staticmethod

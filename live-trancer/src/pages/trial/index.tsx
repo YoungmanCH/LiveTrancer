@@ -5,7 +5,7 @@ import { faMicrophone, faRefresh } from "@fortawesome/free-solid-svg-icons";
 import styles from "./trial.module.css";
 import { RecordingProcessor } from "../../services/recordingProcessor";
 import { ChatMessageProps } from "../../types/type";
-import { switchMode } from "../utils/utils";
+import { switchMode } from "../../utils/utils";
 import { useSocketHandler } from "../../hooks/useSocketHandler";
 
 interface HomeProps {
@@ -28,7 +28,7 @@ export default function Trial({
   const [processor, setProcessor] = useState<ScriptProcessorNode | null>(null);
   const router = useRouter();
   const recordingProcessor = new RecordingProcessor();
-  const SOCKET_URL = "http://127.0.0.1:5003";
+  const SOCKET_URL = "http://127.0.0.1:5000";
 
   useSocketHandler({
     SOCKET_URL,
