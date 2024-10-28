@@ -43,3 +43,9 @@
 .play:hover::before {
   border-left-color: black;
 }
+
+@media (max-width: 768px){
+  .play{
+    right: 5px;
+  }
+}

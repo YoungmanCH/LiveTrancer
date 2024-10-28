@@ -3,6 +3,7 @@
   padding: 30px;
   padding-bottom: 60px;
   background-color: #f9f9f9;
+  width: 100%;
 }
 
 .header {
@@ -87,4 +88,40 @@
 
 .tryNowButton:hover {
   background-color: #ff3e31;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    max-width: 100%;
+  }
+
+  .description {
+    max-width: 100%;
+    margin-left: 0;
+    font-size: 0.9rem;
+  }
+
+  .stepRow {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .stepTitle {
+    font-size: 1.2rem;
+    max-width: 80%;
+  }
+
+  .stepDescription {
+    font-size: 0.8rem;
+    max-width: 90%;
+    text-align: center;
+    margin: 10px auto;
+  }
 }
