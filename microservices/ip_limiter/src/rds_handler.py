@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 import psycopg2
 from psycopg2 import Error
-from LiveTrancer.microservices.ip_rimiter.postgres_sql.ip_requests import FETCH_IP_RECORD, RESET_REQUEST_COUNT, INCREMENT_REQUEST_COUNT, CREATE_IP_RECORD
+from LiveTrancer.microservices.ip_limiter.postgres_sql.ip_requests import FETCH_IP_RECORD, RESET_REQUEST_COUNT, INCREMENT_REQUEST_COUNT, CREATE_IP_RECORD
 
 class AmazonRDSConnection:
     def __init__(self):

@@ -9,7 +9,7 @@ from LiveTrancer.microservices.stt.src import stt_to_chatgpt
 from LiveTrancer.microservices.tts.src import tts
 from LiveTrancer.microservices.sts.src import sts
 from LiveTrancer.microservices.sts.src import stt_to_chatgpt_to_tts
-from LiveTrancer.microservices.ip_rimiter.src.ip_handler import IPAddressFetcher, IPLimitProcessor
+from LiveTrancer.microservices.ip_limiter.src.ip_handler import IPAddressFetcher, IPLimitProcessor
 
 AUDIO_BUFFER = io.BytesIO() 
 
@@ -70,4 +70,4 @@ def handle_query_db():
         emit('query_db_response', {'count': '本日の残り回数'}, room=request.sid)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='0.0.0.0', port=5003)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
