@@ -80,3 +80,14 @@
 .submitButton:hover {
   background-color: #357ABD;
 } */
+
+@media (max-width: 768px) {
+  .contactSection {
+    padding: 10px;
+  }
+
+  .contactContainer {
+    padding: 40px;
+    max-width: 90%;
+  }
+}

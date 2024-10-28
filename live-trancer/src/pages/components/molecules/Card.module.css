@@ -27,3 +27,12 @@
 .radius {
   border-radius: 5%;
 }
+
+@media (max-width: 768px) {
+  .card {
+    width: 90%;
+  }
+  .cardContentWrapper {
+    flex-direction: column;
+  }
+}

@@ -86,3 +86,39 @@
   border-radius: 5px;
   font-size: 12px;
 }
+
+@media (max-width: 768px) {
+  .stsSection {
+    padding: 5px;
+  }
+
+  .header {
+    margin-bottom: 20px;
+  }
+  
+  .title{
+    font-size: 2rem;
+    max-width: 90%;
+  }
+
+  .cardsContainer {
+    flex-direction: column;
+    gap: 20px;
+    padding: 0;
+  }
+
+  .cardContent {
+    padding: 20px 10px 25px 10px;
+  }
+
+  .card {
+    max-width: 100%;
+  }
+
+  .cardTitle{
+    font-size: 20px;
+  }
+  .cardDescription {
+    font-size: 20px;
+  }
+}
