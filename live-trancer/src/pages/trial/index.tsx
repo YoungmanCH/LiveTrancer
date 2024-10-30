@@ -28,7 +28,7 @@ export default function Trial({
   const [processor, setProcessor] = useState<ScriptProcessorNode | null>(null);
   const router = useRouter();
   const recordingProcessor = new RecordingProcessor();
-  const SOCKET_URL = "http://127.0.0.1:5000";
+  const SOCKET_URL = "http://127.0.0.1:5003";
 
   useSocketHandler({
     SOCKET_URL,
