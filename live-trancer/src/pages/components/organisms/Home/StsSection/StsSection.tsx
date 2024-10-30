@@ -25,7 +25,7 @@ const StsSection = () => (
           <p className={styles.cardDescription}>
             音声をリアルタイムで認識し、適切な音声でレスポンスすることで、多言語対応や音声モデレーションが可能。
           </p>
-          <div className={styles.badge}>Label Name</div>
+          <div className={styles.badge}>Check</div>
         </div>
       </div>
       <div className={styles.card}>
@@ -40,7 +40,7 @@ const StsSection = () => (
           <p className={styles.cardDescription}>
             自動化された音声ガイドや応答システムにより、人的リソースを削減し、完全無人化が可能。
           </p>
-          <div className={styles.badge}>Label Name</div>
+          <div className={styles.badge}>Check</div>
         </div>
       </div>
       <div className={styles.card}>
@@ -55,7 +55,7 @@ const StsSection = () => (
           <p className={styles.cardDescription}>
             様々なハードウェア（レジ、IoTデバイス、ロボット）と連携し、音声対応システムを簡単に導入可能。
           </p>
-          <div className={styles.badge}>Label Name</div>
+          <div className={styles.badge}>Check</div>
         </div>
       </div>
     </div>

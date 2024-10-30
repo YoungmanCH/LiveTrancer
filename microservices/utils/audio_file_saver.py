@@ -28,7 +28,7 @@ class AudioFileSaver:
     def save_tts_audio(self, audio_data):
         channels = 1
         sample_width = 2
-        sample_rate = 16000
+        sample_rate = 24000
         filename="tts_audio.wav"
         print("音声データを保存しました。 to tts_audio.wav")
         

@@ -73,3 +73,37 @@
   font-size: 16px;
   color: #666;
 }
+
+@media (max-width: 768px){
+  .useCasesSection{
+    padding-top: 20px;
+    width: 100%;
+  }
+
+  .header{
+    padding: 0;
+    padding-bottom: 20px;
+    max-width: 100%;
+  }
+
+  .headerTitle{
+    font-size: 30px;
+  }
+
+  .headerDescription{
+    width: 100%;
+  }
+
+  .gridContainer{
+    padding: 0;
+  }
+
+  .gridItem{
+    flex-direction: column;
+    padding-bottom: 0px;
+  }
+
+  .textContainer{
+    padding: 0;
+  }
+}

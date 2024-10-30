@@ -3,6 +3,7 @@ import Image, { StaticImageData } from "next/image";
 import styles from "./Card.module.css";
 import Button from "../atoms/Button";
 import { audioPlayBtnImage } from "../../../images";
+import { useRouter } from "next/router";
 
 interface CardProps {
   imgSrc: StaticImageData;
@@ -19,6 +20,11 @@ const Card: React.FC<CardProps> = ({
   description,
   buttonText,
 }) => {
+  const router = useRouter();
+
+  const handleButtonClick = () => {
+    router.push("/mode-selection");
+  }
   return (
     <div className={styles.card}>
       <div className={styles.cardContentWrapper}>
@@ -31,17 +37,17 @@ const Card: React.FC<CardProps> = ({
             className={styles.radius}
           />
         </div>
-        <div className={styles.playButton}>
-          <Image
-            src={audioPlayBtnImage}
-            alt="audio play button"
-            width={50}
-            height={50}
-          />
-        </div>
+        <Button 
+          type="play" 
+          label=""
+        />
       </div>
       <div className={styles.cardContent}>
-        <Button label={buttonText} />
+        <Button 
+          type="button" 
+          label={buttonText} 
+          onClick={handleButtonClick}
+        />
         <h3>{title}</h3>
         <p>{description}</p>
       </div>

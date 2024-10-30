@@ -37,7 +37,8 @@ class STSAudioProcessor:
                         
             if time.time() - self.audio_segment_start_time >= self.min_silence_duration:
                 print("無音区間が検出されました。文節を処理します。")
-                self._handle_audio_transcription()
+                audio_transcription_result = self._handle_audio_transcription()
+                return audio_transcription_result
             
         else:
             print("音声データを継続して蓄積中...")
@@ -54,8 +55,10 @@ class STSAudioProcessor:
     def _handle_audio_transcription(self):
         combined_audio_data = self._combined_audio()
         responses = self._transcribe_audio_with_google_stt(combined_audio_data)
-        self._process_audio_with_stt_and_chatgpt(responses)
+        sts_result = self._process_audio_with_stt_and_chatgpt_and_tts(responses)
         self._reset_frames_and_audio_segment_start_time()
+        
+        return sts_result
         
     def _combined_audio(self) -> bytes: 
         return np.concatenate(self.audio_frames).tobytes()
@@ -69,17 +72,20 @@ class STSAudioProcessor:
         
         return googleSTT.transcribe_audio(audio_data)
         
-    def _process_audio_with_stt_and_chatgpt(self, responses):
+    def _process_audio_with_stt_and_chatgpt_and_tts(self, responses):
         for response in responses:
             for result in response.results:
                 transcript = result.alternatives[0].transcript
                 print(f'STT結果: {transcript}')
                 
                 transcripted_with_chatgpt_data = self._process_text_with_chatgpt(transcript)
+                tts_result = self._transcribe_text_with_google_tts(transcript)
+                
                 self._save_original_transcription_to_file(transcript)
                 self._save_chatgpt_transcription_to_file(transcripted_with_chatgpt_data)
                 
-                self._transcribe_text_with_google_tts(transcript)
+                return tts_result
+                
         
     def _reset_frames_and_audio_segment_start_time(self):
         self.audio_frames = []
@@ -99,4 +105,4 @@ class STSAudioProcessor:
         
     def _transcribe_text_with_google_tts(self, text):
         tts_processor = tts.TTSProcessor()
-        tts_processor.transcribe_text_with_google_tts(text)
+        return tts_processor.transcribe_text_with_google_tts(text)
