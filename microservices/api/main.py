@@ -31,7 +31,8 @@ def handle_sts(audio_data):
         data = np.frombuffer(audio_data, dtype=np.int16)
 
         save_audio.save_audio(data)
-        audio_processor = sts.STSAudioProcessor.get_instance()
+        audio_processor = stt_to_chatgpt_to_tts.STTToChatGPTToTTSAudioProcessor.get_instance()
+        # audio_processor = sts.STSAudioProcessor.get_instance()
         tts_audio = audio_processor.process_audio(data)
         
         _write_binary(AUDIO_BUFFER, tts_audio)
@@ -72,4 +73,4 @@ def handle_query_db():
         emit('query_db_response', {'count': '本日の残り回数'}, room=request.sid)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5003)
