@@ -3,13 +3,20 @@ import io
 from flask import Flask, request
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
-from LiveTrancer.microservices.utils import save_audio
-from LiveTrancer.microservices.stt.src import stt
-from LiveTrancer.microservices.stt.src import stt_to_chatgpt
-from LiveTrancer.microservices.tts.src import tts
-from LiveTrancer.microservices.sts.src import sts
-from LiveTrancer.microservices.sts.src import stt_to_chatgpt_to_tts
-from LiveTrancer.microservices.ip_limiter.src.ip_handler import IPAddressFetcher, IPLimitProcessor
+from ..utils import save_audio
+from ..stt.src import stt
+from ..stt.src import stt_to_chatgpt
+from ..tts.src import tts
+from ..sts.src import sts
+from ..sts.src import stt_to_chatgpt_to_tts
+from ..ip_limiter.src.ip_handler import IPAddressFetcher, IPLimitProcessor
+# from LiveTrancer.microservices.utils import save_audio
+# from LiveTrancer.microservices.stt.src import stt
+# from LiveTrancer.microservices.stt.src import stt_to_chatgpt
+# from LiveTrancer.microservices.tts.src import tts
+# from LiveTrancer.microservices.sts.src import sts
+# from LiveTrancer.microservices.sts.src import stt_to_chatgpt_to_tts
+# from LiveTrancer.microservices.ip_limiter.src.ip_handler import IPAddressFetcher, IPLimitProcessor
 
 AUDIO_BUFFER = io.BytesIO() 
 
@@ -17,6 +24,7 @@ app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins="*")
 
+# WebSocket接続時の処理
 @socketio.on('connect')
 def handle_connect():
     print("クライアントが接続されました")

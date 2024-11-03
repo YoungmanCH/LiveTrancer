@@ -1,5 +1,5 @@
 import openai
-from ..src.prompts.prompts_text import DEFAULT_PROMPT
+from ..src.prompts.prompts_text import DEFAULT_PROMPT, COLLEGE_LECTURE_PROMPT, BUISINESS_CONFERENCE_PROMPT
 
 prompt = (
     "「{}」を、専門用語を使わずに簡単に説明してください。"
