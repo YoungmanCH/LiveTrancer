@@ -3,7 +3,7 @@ import io
 from flask import Flask, request
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
-from ..utils import save_audio
+from ..utils import save_audio, write_binary
 from ..stt.src import stt
 from ..stt.src import stt_to_chatgpt
 from ..tts.src import tts
@@ -29,18 +29,16 @@ def handle_sts(audio_data):
         data = np.frombuffer(audio_data, dtype=np.int16)
 
         save_audio.save_audio(data)
-        audio_processor = stt_to_chatgpt_to_tts.STTToChatGPTToTTSAudioProcessor.get_instance()
-        # audio_processor = sts.STSAudioProcessor.get_instance()
-        tts_audio = audio_processor.process_audio(data)
         
-        _write_binary(AUDIO_BUFFER, tts_audio)
+        audio_processor = stt_to_chatgpt_to_tts.STTToChatGPTToTTSAudioProcessor.get_instance()
+        tts_audio = audio_processor.process_audio(data)
+        write_binary(AUDIO_BUFFER, tts_audio)
+        
+        audio_processor = stt_to_chatgpt.STTToChatGPTAudioProcessor.get_instance()
+        audio_processor.process_audio(data)
 
     except Exception as e:
         emit('sts_response', {'error': str(e)})
-
-# データをバイナリとして蓄積（バッファに書き込む）
-def _write_binary(buffer, tts_audio):
-    buffer.write(tts_audio)
         
 @socketio.on('stop_recording')
 def handle_stop_recording():
@@ -54,10 +52,6 @@ def handle_stop_recording():
     except Exception as e:
         emit('stop_recording', {'error': str(e)})
 
-# @socketio.on_error()
-# def error_handler(e):
-#     print(f'エラー: {e}')
-
 @socketio.on('query_db')
 def handle_query_db():
     print('クエリが実行されました')
@@ -69,6 +63,16 @@ def handle_query_db():
         print('1日のリクエスト上限に達しました')
     else:
         emit('query_db_response', {'count': '本日の残り回数'}, room=request.sid)
+        
+# @socketio.on('query_db')
+# def unlimited_handle_query_db():
+#     print('クエリが実行されました')
+#     IPAddressFetcher.fetch_from_request(request)
+#     emit('query_db_response', {'count': '本日の残り回数'}, room=request.sid)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0', port=5003)
+    
+# @socketio.on_error()
+# def error_handler(e):
+#     print(f'エラー: {e}')
