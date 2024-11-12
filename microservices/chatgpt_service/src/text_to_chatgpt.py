@@ -1,5 +1,5 @@
 import openai
-from ..src.prompts.prompts_text import DEFAULT_PROMPT, COLLEGE_LECTURE_PROMPT, BUISINESS_CONFERENCE_PROMPT
+from ..src.prompts.prompts_text import DEFAULT_PROMPT, COLLEGE_LECTURE_PROMPT, BUISINESS_CONFERENCE_PROMPT, MEETING_MINUTES_PROMPT
 
 prompt = (
     "「{}」を、専門用語を使わずに簡単に説明してください。"
@@ -11,7 +11,8 @@ temperature=0.7
 
 class OpenAIProcessor:
     def __init__(self):
-        self.prompt = DEFAULT_PROMPT
+        self.prompt = MEETING_MINUTES_PROMPT
+        # self.prompt = DEFAULT_PROMPT
         
     def process_text_with_chatgpt(self, transcript):
         formatted_prompt = self._format_prompt(transcript)
